@@ -288,6 +288,16 @@
             margin: 9px 0
         }
 
+        .descfooter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 24px
+        }
+
+        .descfooter p {
+            margin: 9px 0
+        }
+
         .foot {
             font-size: 11px;
             color: #777;
@@ -425,8 +435,10 @@
                             <h3>Descrição do desvio:</h3>
                             <p><b>Resumo do atendimento:</b> <span class="textfield" id="rsummary">—</span></p>
                             <p><b>Oportunidade:</b> <span class="textfield" id="ropp">—</span></p>
-                            <p><b>Ação:</b> <span class="textfield" id="raction">—</span></p>
-                            <p><b>Retorno:</b> <span id="rreturn">24 horas</span></p>
+                            <div class="descfooter">
+                                <p><b>Ação:</b> <span class="textfield" id="raction">—</span></p>
+                                <p><b>Retorno:</b> <span id="rreturn">24 horas</span></p>
+                            </div>
                         </div>
                         <div class="foot">Qualidade · Uso interno</div>
                     </div>
@@ -507,15 +519,30 @@
 
             update();
         }
+        function renderSummary(value) {
+            const target = $('rsummary');
+            target.replaceChildren();
+            const parts = value.split(/(\*\*[^*]+\*\*)/g);
+            parts.forEach(part => {
+                if (part.startsWith('**') && part.endsWith('**')) {
+                    const strong = document.createElement('strong');
+                    strong.textContent = part.slice(2, -2);
+                    target.append(strong);
+                } else {
+                    target.append(document.createTextNode(part));
+                }
+            });
+        }
         function update() {
             const red = $('model').value === 'red'; $('report').className = red ? 'red' : 'blue'; $('rtitle').textContent = red ? 'Report de Desvio Inadmissível' : 'Report de Desvio de Conhecimento';
             const fields = { agent: 'ragent', bp: 'rbp', cell: 'rcell', sup: 'rsup', date: 'rdate', duration: 'rduration', hour: 'rhour', callid: 'rcallid', nps: 'rnps', summary: 'rsummary', opportunity: 'ropp', action: 'raction', return: 'rreturn' };
-            Object.entries(fields).forEach(([a, b]) => $(b).textContent = $(a).value || '—');
+            Object.entries(fields).filter(([a]) => a !== 'summary').forEach(([a, b]) => $(b).textContent = $(a).value || '—');
+            renderSummary($('summary').value || '—');
         }
         $('refresh').onclick = update; $('model').onchange = update;
         $('print').onclick = () => { update(); window.print() };
         $('copy').onclick = async () => {
-            update(); let t = `${$('rtitle').textContent}\nAgente: ${$('agent').value} | RK: ${$('bp').value} | Célula: ${$('cell').value}\nSupervisor: ${$('sup').value}\nData: ${$('date').value} | Duração: ${$('duration').value} | Hora: ${$('hour').value}\nID: ${$('callid').value} | NPS: ${$('nps').value}\n\nResumo: ${$('summary').value}\n\nOportunidade: ${$('opportunity').value}\n\nAção: ${$('action').value}\nRetorno: ${$('return').value}`;
+            update(); let t = `${$('rtitle').textContent}\nAgente: ${$('agent').value} | RK: ${$('bp').value} | Célula: ${$('cell').value}\nSupervisor: ${$('sup').value}\nData: ${$('date').value} | Duração: ${$('duration').value} | Hora: ${$('hour').value}\nID: ${$('callid').value} | NPS: ${$('nps').value}\n\nResumo: ${$('summary').value}\n\nOportunidade: ${$('opportunity').value}\n\nAção: ${$('action').value} | Retorno: ${$('return').value}`;
             try { await navigator.clipboard.writeText(t); alert('Texto do report copiado.') } catch (e) { alert(t) }
         };
         ['agent', 'bp', 'cell', 'sup', 'date', 'duration', 'hour', 'callid', 'nps', 'summary', 'opportunity', 'action', 'return'].forEach(id => $(id).addEventListener('input', update));

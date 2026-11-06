@@ -1,1 +1,525 @@
-oi
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gerador de Reports | Qualidade LATAM</title>
+    <style>
+        :root {
+            --navy: #123b68;
+            --blue: #2788a5;
+            --red: #b00000;
+            --bg: #f3f6fa;
+            --ink: #182330;
+            --line: #d8e0e8
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            font: 14px Arial, sans-serif;
+            color: var(--ink)
+        }
+
+        header {
+            background: linear-gradient(110deg, #143e6d, #2688a5);
+            color: white;
+            padding: 22px 28px
+        }
+
+        header h1 {
+            margin: 0 0 6px;
+            font-size: 25px
+        }
+
+        header p {
+            margin: 0;
+            opacity: .9
+        }
+
+        main {
+            max-width: 1450px;
+            margin: 20px auto;
+            padding: 0 18px;
+            display: grid;
+            grid-template-columns: 390px 1fr;
+            gap: 18px
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 2px 8px #102b4510
+        }
+
+        h2 {
+            font-size: 17px;
+            margin: 0 0 14px;
+            color: var(--navy)
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            font-size: 12px;
+            margin: 11px 0 5px
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            border: 1px solid #cbd5df;
+            border-radius: 6px;
+            padding: 9px;
+            font: 13px Arial;
+            background: white
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical
+        }
+
+        button {
+            border: 0;
+            border-radius: 7px;
+            padding: 10px 13px;
+            font-weight: bold;
+            cursor: pointer
+        }
+
+        .primary {
+            background: #167fa0;
+            color: white
+        }
+
+        .secondary {
+            background: #e8eef4;
+            color: #163b5d
+        }
+
+        .danger {
+            background: #a90000;
+            color: white
+        }
+
+        .btnrow {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px
+        }
+
+        #file {
+            padding: 8px;
+            background: #f7f9fb
+        }
+
+        .status {
+            font-size: 12px;
+            color: #526477;
+            margin-top: 8px
+        }
+
+        #results {
+            max-height: 370px;
+            overflow: auto;
+            margin-top: 10px;
+            border: 1px solid var(--line);
+            border-radius: 7px
+        }
+
+        .case {
+            padding: 10px;
+            border-bottom: 1px solid #e8edf2;
+            cursor: pointer;
+            font-size: 12px
+        }
+
+        .case:hover,
+        .case.active {
+            background: #eaf5fa
+        }
+
+        .case strong {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 4px
+        }
+
+        small {
+            color: #617386
+        }
+
+        .formgrid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px
+        }
+
+        .formgrid .wide {
+            grid-column: 1/-1
+        }
+
+        .reportwrap {
+            overflow: auto;
+            background: #e9edf1;
+            padding: 18px;
+            border-radius: 10px
+        }
+
+        #report {
+            width: 100%;
+            min-width: 650px;
+            min-height: 540px;
+            background: white;
+            border: 1px solid #9a9a9a;
+            position: relative;
+            padding: 26px 36px 24px 115px;
+            overflow: hidden
+        }
+
+        #report.blue {
+            border: 1px solid #888
+        }
+
+        #report.red {
+            border: 1px solid #bd7777
+        }
+
+        .swoosh {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 85px;
+            background: #426c9e;
+            border-radius: 0 100px 100px 0;
+            z-index: 0
+        }
+
+        #report.red .swoosh {
+            background: #990000
+        }
+
+        .world {
+            position: absolute;
+            top: 10px;
+            left: 8px;
+            color: white;
+            font-size: 23px;
+            opacity: .9
+        }
+
+        .plane {
+            position: absolute;
+            right: 15px;
+            bottom: 25px;
+            color: #426c9e;
+            font-size: 48px;
+            transform: rotate(-30deg)
+        }
+
+        #report.red .plane {
+            color: #990000
+        }
+
+        .reportcontent {
+            position: relative;
+            z-index: 1
+        }
+
+        .reporttitle {
+            text-align: center;
+            font-size: 29px;
+            font-weight: bold;
+            color: #2685a3;
+            margin: 12px 0 15px
+        }
+
+        #report.red .reporttitle {
+            color: #b00000
+        }
+
+        .meta {
+            display: grid;
+            grid-template-columns: 1.6fr .6fr 1fr;
+            gap: 12px;
+            line-height: 1.6;
+            margin-bottom: 8px
+        }
+
+        .meta div {
+            font-size: 13px
+        }
+
+        .meta b {
+            font-weight: bold
+        }
+
+        .reportid {
+            margin: 12px 0;
+            font-size: 13px
+        }
+
+        .desc {
+            border: 1px solid #aaa;
+            padding: 10px;
+            margin-top: 12px;
+            font-size: 12px;
+            line-height: 1.45
+        }
+
+        .desc h3 {
+            text-align: center;
+            margin: 0 0 12px;
+            font-size: 14px
+        }
+
+        .desc p {
+            margin: 9px 0
+        }
+
+        .foot {
+            font-size: 11px;
+            color: #777;
+            text-align: right;
+            margin-top: 10px
+        }
+
+        #report .textfield {
+            white-space: pre-wrap
+        }
+
+        @media(max-width:1000px) {
+            main {
+                grid-template-columns: 1fr
+            }
+
+            #report {
+                min-width: 600px
+            }
+        }
+
+        @media print {
+            body {
+                background: white
+            }
+
+            header,
+            main>.panel:first-child,
+            .editor,
+            .actions {
+                display: none !important
+            }
+
+            main {
+                display: block;
+                margin: 0;
+                padding: 0
+            }
+
+            .panel {
+                border: 0;
+                box-shadow: none;
+                padding: 0
+            }
+
+            .reportwrap {
+                padding: 0;
+                background: white
+            }
+
+            #report {
+                min-width: 0;
+                width: 100%;
+                height: auto;
+                min-height: 0;
+                page-break-inside: avoid
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Gerador de Reports de Qualidade</h1>
+        <p>LATAM · Konecta · Reports de desvio a partir da base CASOS</p>
+    </header>
+    <main>
+        <section class="panel">
+            <h2>1. Importar base CASOS</h2>
+            <label>Arquivo Excel (.xlsx)</label><input id="file" type="file" accept=".xlsx,.xls">
+            <div class="status" id="status">Selecione a planilha “Analise Qualitativa Detratores NPS x LEA 26”.</div>
+            <label>Buscar casos</label><input id="search" placeholder="Agente, supervisor, BP, ID da chamada...">
+            <div class="formgrid">
+                <div><label>Supervisor</label><select id="supervisor">
+                        <option value="">Todos</option>
+                    </select></div>
+                <div><label>Classe NPS</label><select id="classe">
+                        <option value="">Todas</option>
+                        <option>DETRATOR</option>
+                        <option>NEUTRO</option>
+                        <option>PROMOTOR</option>
+                    </select></div>
+            </div>
+            <div id="results"></div>
+            <div class="status">Clique em um caso da lista para carregar os dados no formulário.</div>
+            <hr style="border:0;border-top:1px solid #e3e8ee;margin:18px 0">
+            <h2>2. Tipo de report</h2>
+            <label>Modelo</label><select id="model">
+                <option value="blue">Report de Desvio de Conhecimento (azul)</option>
+                <option value="red">Report de Desvio Inadmissível (vermelho)</option>
+            </select>
+            <label>Agente (editável)</label><input id="agent">
+            <div class="formgrid">
+                <div><label>BP / RK</label><input id="bp"></div>
+                <div><label>Célula</label><input id="cell" value="PV2 LUA"></div>
+                <div><label>Supervisor</label><input id="sup"></div>
+                <div><label>Data</label><input id="date"></div>
+                <div><label>Duração</label><input id="duration" placeholder="00:00:00"></div>
+                <div><label>Hora</label><input id="hour"></div>
+                <div class="wide"><label>ID da chamada</label><input id="callid"></div>
+                <div class="wide"><label>Nota NPS</label><input id="nps"></div>
+            </div>
+            <label>Descrição do desvio / resumo do atendimento</label><textarea id="summary" rows="6"
+                placeholder="Resumo do atendimento..."></textarea>
+            <label>Oportunidade</label><textarea id="opportunity" rows="3"></textarea>
+            <label>Ação</label><textarea id="action" rows="2" value="Orientação e feedback operacional."></textarea>
+            <div class="formgrid">
+                <div><label>Retorno</label><input id="return" value="24 horas"></div>
+                <div><label>Responsável / supervisor</label><input id="responsible"></div>
+            </div>
+            <div class="btnrow actions"><button class="primary" id="refresh">Atualizar report</button><button
+                    class="secondary" id="print">Imprimir / salvar PDF</button><button class="secondary"
+                    id="copy">Copiar texto</button></div>
+        </section>
+        <section class="panel">
+            <h2>Pré-visualização do report</h2>
+            <div class="reportwrap">
+                <div id="report" class="blue">
+                    <div class="swoosh"></div>
+                    <div class="world">✦</div>
+                    <div class="plane">✈</div>
+                    <div class="reportcontent">
+                        <div class="reporttitle" id="rtitle">Report de Desvio de Conhecimento</div>
+                        <div class="meta">
+                            <div><b>Agente:</b> <span id="ragent">—</span></div>
+                            <div><b>RK:</b> <span id="rbp">—</span></div>
+                            <div><b>Célula:</b> <span id="rcell">PV2 LUA</span></div>
+                            <div class="wide"><b>Supervisor:</b> <span id="rsup">—</span></div>
+                            <div class="wide"><b>Data:</b> <span id="rdate">—</span> | <b>Duração:</b> <span
+                                    id="rduration">—</span> | <b>Hora:</b> <span id="rhour">—</span></div>
+                        </div>
+                        <div class="reportid"><b>ID:</b> <span id="rcallid">—</span> | <b>NOTA NPS:</b> <span
+                                id="rnps">—</span></div>
+                        <div class="desc">
+                            <h3>Descrição do desvio:</h3>
+                            <p><b>Resumo do atendimento:</b> <span class="textfield" id="rsummary">—</span></p>
+                            <p><b>Oportunidade:</b> <span class="textfield" id="ropp">—</span></p>
+                            <p><b>Ação:</b> <span class="textfield" id="raction">—</span></p>
+                            <p><b>Retorno:</b> <span id="rreturn">24 horas</span></p>
+                        </div>
+                        <div class="foot">Qualidade · Uso interno</div>
+                    </div>
+                </div>
+            </div>
+            <p class="status">Prévia ajustável. Imprimir abre a opção de salvar como PDF no navegador.</p>
+        </section>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script>
+        let rows = [], headers = [], selected = null;
+        const $ = id => document.getElementById(id);
+        function norm(v) { return v == null ? '' : String(v).trim() }
+        function dateFmt(v) { if (v instanceof Date) return v.toLocaleDateString('pt-BR'); if (typeof v === 'number') { let d = XLSX.SSF.parse_date_code(v); return d ? `${String(d.d).padStart(2, '0')}/${String(d.m).padStart(2, '0')}/${d.y}` : '' } let s = norm(v); let d = new Date(s); return s && !isNaN(d) ? d.toLocaleDateString('pt-BR') : s }
+        function get(row, name) { return norm(row[name]) }
+        $('file').addEventListener('change', async e => {
+            const f = e.target.files[0]; if (!f) return;
+            try {
+                const data = await f.arrayBuffer(); const wb = XLSX.read(data, { cellDates: true }); const ws = wb.Sheets['CASOS']; if (!ws) throw Error('A aba CASOS não foi encontrada.');
+                rows = XLSX.utils.sheet_to_json(ws, { defval: '', raw: false }); headers = Object.keys(rows[0] || {});
+                $('status').textContent = `${rows.length} casos carregados da aba CASOS.`;
+                const sups = [...new Set(rows.map(r => get(r, 'SUPERVISOR')).filter(Boolean))].sort();
+                $('supervisor').innerHTML = '<option value="">Todos</option>' + sups.map(s => `<option>${esc(s)}</option>`).join('');
+                renderList();
+            } catch (err) { $('status').textContent = 'Erro ao ler a planilha: ' + err.message }
+        });
+        function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])) }
+        ['search', 'supervisor', 'classe'].forEach(id => $(id).addEventListener('input', renderList));
+        function renderList() {
+            let q = $('search').value.toLowerCase(), sup = $('supervisor').value, cl = $('classe').value;
+            let filtered = rows.filter(r => (!sup || get(r, 'SUPERVISOR') === sup) && (!cl || get(r, 'CLASSE').toUpperCase() === cl) && (!q || Object.values(r).some(v => norm(v).toLowerCase().includes(q))));
+            $('results').innerHTML = filtered.slice(0, 250).map((r, i) => `<div class="case" data-index="${rows.indexOf(r)}"><strong>${esc(get(r, 'OPERADOR') || 'Agente não informado')} · NPS ${esc(get(r, 'NOTA NPS'))}</strong><small>${esc(get(r, 'SUPERVISOR'))} | ${esc(get(r, 'BP'))} | ${esc(get(r, 'DIA'))}</small><br>${esc(get(r, 'ID CHAMADA'))}<br>${esc(get(r, 'MOTIVO DO CONTATO (ASSUNTO)'))}</div>`).join('') || '<div class="case">Nenhum caso encontrado.</div>';
+            document.querySelectorAll('.case[data-index]').forEach(el => el.onclick = () => selectCase(Number(el.dataset.index), el));
+        }
+        function selectCase(i, el) {
+            selected = rows[i];
+
+            document.querySelectorAll('.case').forEach(x =>
+                x.classList.remove('active')
+            );
+
+            el.classList.add('active');
+
+            let r = selected;
+
+            $('agent').value = get(r, 'OPERADOR');
+            $('bp').value = get(r, 'BP');
+            $('sup').value = get(r, 'SUPERVISOR');
+            $('date').value = dateFmt(get(r, 'DIA'));
+            $('cell').value = get(r, 'CÉLULA') || 'PV2 LUA';
+            $('callid').value = get(r, 'ID CHAMADA');
+            $('nps').value = get(r, 'NOTA NPS') + ' · ' + get(r, 'CLASSE');
+
+            const comentario =
+                get(r, 'CLIENTE: COMENTÁRIO NPS') ||
+                get(r, 'CLIENTE: COMENTÁRIO ADICIONAL') ||
+                'Não informado';
+
+            $('summary').value =
+                `O cliente entrou em contato pelo canal ${get(r, 'CANAL DE CONTATO') || get(r, 'CANAL')}. ` +
+                `Motivo: ${get(r, 'MOTIVO DO CONTATO (ASSUNTO)')} — ${get(r, 'DETALHE DO MOTIVO')}.\n\n` +
+
+                `**COMENTÁRIO DO CLIENTE:** ${comentario}\n\n` +
+
+                `Registro LEA: ${get(r, 'LEA: MOTIVO DO CONTATO')}\n` +
+                `Resolução LEA: ${get(r, 'LEA: RESOLUÇÃO')}\n` +
+                `Ação do operador: ${get(r, 'LEA: AÇÃO DO OPERADOR')}`;
+
+            $('opportunity').value =
+                get(r, 'OBSERVAÇÃO DO ANALISTA') ||
+                get(r, 'CAUSA PRINCIPAL DO NPS') ||
+                'Revisar a condução do atendimento e seguir corretamente o procedimento aplicável.';
+
+            $('action').value = 'Feedback individual';
+            $('responsible').value =
+                get(r, 'RESPONSÁVEL PELA AÇÃO') ||
+                get(r, 'SUPERVISOR');
+
+            update();
+        }
+        function update() {
+            const red = $('model').value === 'red'; $('report').className = red ? 'red' : 'blue'; $('rtitle').textContent = red ? 'Report de Desvio Inadmissível' : 'Report de Desvio de Conhecimento';
+            const fields = { agent: 'ragent', bp: 'rbp', cell: 'rcell', sup: 'rsup', date: 'rdate', duration: 'rduration', hour: 'rhour', callid: 'rcallid', nps: 'rnps', summary: 'rsummary', opportunity: 'ropp', action: 'raction', return: 'rreturn' };
+            Object.entries(fields).forEach(([a, b]) => $(b).textContent = $(a).value || '—');
+        }
+        $('refresh').onclick = update; $('model').onchange = update;
+        $('print').onclick = () => { update(); window.print() };
+        $('copy').onclick = async () => {
+            update(); let t = `${$('rtitle').textContent}\nAgente: ${$('agent').value} | RK: ${$('bp').value} | Célula: ${$('cell').value}\nSupervisor: ${$('sup').value}\nData: ${$('date').value} | Duração: ${$('duration').value} | Hora: ${$('hour').value}\nID: ${$('callid').value} | NPS: ${$('nps').value}\n\nResumo: ${$('summary').value}\n\nOportunidade: ${$('opportunity').value}\n\nAção: ${$('action').value}\nRetorno: ${$('return').value}`;
+            try { await navigator.clipboard.writeText(t); alert('Texto do report copiado.') } catch (e) { alert(t) }
+        };
+        ['agent', 'bp', 'cell', 'sup', 'date', 'duration', 'hour', 'callid', 'nps', 'summary', 'opportunity', 'action', 'return'].forEach(id => $(id).addEventListener('input', update));
+    </script>
+</body>
+
+</html>

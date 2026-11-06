@@ -408,8 +408,8 @@
                 <div><label>Retorno</label><input id="return" value="24 horas"></div>
                 <div><label>Responsável / supervisor</label><input id="responsible"></div>
             </div>
-            <div class="btnrow actions"><button class="primary" id="refresh">Atualizar report</button><button
-                    class="secondary" id="print">Imprimir / salvar PDF</button><button class="secondary"
+                <div class="btnrow actions"><button class="primary" id="refresh">Atualizar report</button><button
+                    class="secondary" id="saveJpg">Salvar como JPG</button><button class="secondary"
                     id="copy">Copiar texto</button></div>
         </section>
         <section class="panel">
@@ -444,16 +444,19 @@
                     </div>
                 </div>
             </div>
-            <p class="status">Prévia ajustável. Imprimir abre a opção de salvar como PDF no navegador.</p>
+            <p class="status">A imagem JPG será nomeada com o nome da agente e a data de hoje.</p>
         </section>
     </main>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script>
         let rows = [], headers = [], selected = null;
         const $ = id => document.getElementById(id);
         function norm(v) { return v == null ? '' : String(v).trim() }
+        function todayIso() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }
         function dateFmt(v) { if (v instanceof Date) return v.toLocaleDateString('pt-BR'); if (typeof v === 'number') { let d = XLSX.SSF.parse_date_code(v); return d ? `${String(d.d).padStart(2, '0')}/${String(d.m).padStart(2, '0')}/${d.y}` : '' } let s = norm(v); let d = new Date(s); return s && !isNaN(d) ? d.toLocaleDateString('pt-BR') : s }
         function get(row, name) { return norm(row[name]) }
+        $('date').value = new Date().toLocaleDateString('pt-BR');
         $('file').addEventListener('change', async e => {
             const f = e.target.files[0]; if (!f) return;
             try {
@@ -540,7 +543,19 @@
             renderSummary($('summary').value || '—');
         }
         $('refresh').onclick = update; $('model').onchange = update;
-        $('print').onclick = () => { update(); window.print() };
+        $('saveJpg').onclick = async () => {
+            update();
+            try {
+                const canvas = await html2canvas($('report'), { backgroundColor: '#ffffff', scale: 2 });
+                const link = document.createElement('a');
+                const agent = $('agent').value.trim().replace(/[\\/:*?"<>|]/g, '_') || 'agente';
+                link.download = `${agent}_${todayIso()}.jpg`;
+                link.href = canvas.toDataURL('image/jpeg', 0.95);
+                link.click();
+            } catch (err) {
+                alert('Não foi possível gerar o JPG: ' + err.message);
+            }
+        };
         $('copy').onclick = async () => {
             update(); let t = `${$('rtitle').textContent}\nAgente: ${$('agent').value} | RK: ${$('bp').value} | Célula: ${$('cell').value}\nSupervisor: ${$('sup').value}\nData: ${$('date').value} | Duração: ${$('duration').value} | Hora: ${$('hour').value}\nID: ${$('callid').value} | NPS: ${$('nps').value}\n\nResumo: ${$('summary').value}\n\nOportunidade: ${$('opportunity').value}\n\nAção: ${$('action').value} | Retorno: ${$('return').value}`;
             try { await navigator.clipboard.writeText(t); alert('Texto do report copiado.') } catch (e) { alert(t) }

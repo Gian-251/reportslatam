@@ -260,9 +260,10 @@
     </div>
 
     <!-- BLOCO 2: IMPACTO DOS OFENSORES (COL 5) -->
-    <div class="lg:col-span-5 bg-white rounded-lg shadow border border-slate-200 overflow-hidden flex flex-col">
-      <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
-        2. Impacto dos Ofensores
+    <div class="lg:col-span-5 flex flex-col gap-4">
+      <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden flex flex-col">
+        <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
+          2. Impacto dos Ofensores
       </div>
       <div class="p-3 flex-1 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
         <!-- TABELA DE OFENSORES -->
@@ -300,6 +301,30 @@
           <div class="w-full h-[170px] relative">
             <canvas id="chartOfensores"></canvas>
             <p id="chartError" class="hidden absolute inset-0 grid place-items-center text-center text-xs text-red-600">Não foi possível carregar o gráfico. Verifique a conexão e recarregue a página.</p>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- BLOCO 3: CONFIABILIDADE DA AMOSTRA -->
+      <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden">
+        <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
+          3. Confiabilidade da Amostra
+        </div>
+        <div class="p-3">
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="bg-slate-50 border border-slate-200 rounded p-2">
+              <div class="text-[10px] uppercase font-bold text-slate-500">Chamadas</div>
+              <div id="sampleCalls" class="text-sm sm:text-base font-extrabold text-slate-800">1.029</div>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 rounded p-2">
+              <div class="text-[10px] uppercase font-bold text-slate-500">Analisadas</div>
+              <div id="sampleAnalyzed" class="text-sm sm:text-base font-extrabold text-blue-700">124</div>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 rounded p-2">
+              <div class="text-[10px] uppercase font-bold text-slate-500">Cobertura (analisadas / chamadas)</div>
+              <div id="coverageSample" data-calculated class="text-sm sm:text-base font-extrabold text-emerald-600">12,05%</div>
+            </div>
           </div>
         </div>
       </div>
@@ -432,28 +457,7 @@
         </div>
       </div>
 
-      <!-- BLOCO 3: CONFIABILIDADE DA AMOSTRA -->
-      <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden">
-        <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
-          3. Confiabilidade da Amostra
-        </div>
-        <div class="p-3">
-          <div class="grid grid-cols-3 gap-2 text-center">
-            <div class="bg-slate-50 border border-slate-200 rounded p-2">
-              <div class="text-[10px] uppercase font-bold text-slate-500">Chamadas</div>
-              <div id="sampleCalls" class="text-sm sm:text-base font-extrabold text-slate-800">1.029</div>
-            </div>
-            <div class="bg-slate-50 border border-slate-200 rounded p-2">
-              <div class="text-[10px] uppercase font-bold text-slate-500">Analisadas</div>
-              <div id="sampleAnalyzed" class="text-sm sm:text-base font-extrabold text-blue-700">124</div>
-            </div>
-            <div class="bg-slate-50 border border-slate-200 rounded p-2">
-              <div class="text-[10px] uppercase font-bold text-slate-500">Cobertura (analisadas / chamadas)</div>
-              <div id="coverageSample" data-calculated class="text-sm sm:text-base font-extrabold text-emerald-600">12,05%</div>
-            </div>
-          </div>
-        </div>
-      </div>
+
 
     </div>
 

@@ -542,9 +542,11 @@
             const fields = { agent: 'ragent', bp: 'rbp', cell: 'rcell', sup: 'rsup', date: 'rdate', duration: 'rduration', hour: 'rhour', callid: 'rcallid', nps: 'rnps', summary: 'rsummary', opportunity: 'ropp', action: 'raction', return: 'rreturn', responsible: 'rresponsible' };
             Object.entries(fields).filter(([a]) => a !== 'summary').forEach(([a, b]) => $(b).textContent = $(a).value || '—');
             renderSummary($('summary').value || '—');
+            updateResponsible();
         }
         $('refresh').onclick = update; $('model').onchange = update;
         function updateResponsible() {
+            $('rsup').textContent = $('responsible').value || $('sup').value || '—';
             $('rresponsible').textContent = $('responsible').value || '—';
         }
         $('responsible').addEventListener('input', updateResponsible);

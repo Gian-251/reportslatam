@@ -104,6 +104,9 @@
       outline-offset: 1px;
       background-color: #eff6ff;
     }
+    #dashboard .text-xs { font-size: 0.875rem; line-height: 1.25rem; }
+    #dashboard [class~="text-[10px]"] { font-size: 0.75rem !important; line-height: 1rem; }
+    #dashboard [class~="text-[11px]"] { font-size: 0.8125rem !important; line-height: 1.125rem; }
   </style>
 </head>
 <body class="p-2 sm:p-4 md:p-6 max-w-[1600px] mx-auto">
@@ -260,46 +263,87 @@
     </div>
 
     <!-- BLOCO 2: IMPACTO DOS OFENSORES (COL 5) -->
-    <div class="lg:col-span-5 bg-white rounded-lg shadow border border-slate-200 overflow-hidden flex flex-col">
-      <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
-        2. Impacto dos Ofensores
-      </div>
-      <div class="p-3 flex-1 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
-        <!-- TABELA DE OFENSORES -->
-        <div class="sm:col-span-5 overflow-x-auto">
-          <table class="w-full text-xs text-center border-collapse table-border">
-            <thead>
-              <tr class="bg-slate-100 text-slate-700 font-semibold">
-                <th class="p-1.5 text-left pl-2">Ofensor</th>
-                <th class="p-1.5">Qtd</th>
-              </tr>
-            </thead>
-            <tbody id="offenderRows" class="divide-y divide-slate-200 font-medium text-[11px]">
-              <tr>
-                <td class="p-1.5 text-left pl-2 bg-slate-50">CAMBIO_VOLUNTARIO</td>
-                <td class="p-1.5">229</td>
-              </tr>
-              <tr>
-                <td class="p-1.5 text-left pl-2 bg-slate-50">EXCEPCIONES</td>
-                <td class="p-1.5">131</td>
-              </tr>
-              <tr>
-                <td class="p-1.5 text-left pl-2 bg-slate-50">CAMBIO_INVOLUNTARIO</td>
-                <td class="p-1.5">131</td>
-              </tr>
-              <tr>
-                <td class="p-1.5 text-left pl-2 bg-slate-50">CHECK-IN</td>
-                <td class="p-1.5">100</td>
-              </tr>
-            </tbody>
-          </table>
+    <div class="lg:col-span-5 flex flex-col gap-4">
+      <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden flex flex-col">
+        <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
+          2. Impacto dos Ofensores
         </div>
-        <!-- GRÁFICO DONUT -->
-        <div class="sm:col-span-7 flex flex-col items-center justify-center relative min-h-[190px]">
-          <h3 class="text-xs font-bold text-slate-600 mb-1">Pesquisas negativas</h3>
-          <div class="w-full h-[170px] relative">
-            <canvas id="chartOfensores"></canvas>
-            <p id="chartError" class="hidden absolute inset-0 grid place-items-center text-center text-xs text-red-600">Não foi possível carregar o gráfico. Verifique a conexão e recarregue a página.</p>
+        <form id="addOffenderForm" data-editor-ignore class="flex flex-wrap items-end gap-2 p-3 border-b border-slate-200">
+          <label class="flex-1 min-w-[150px] text-xs font-medium text-slate-700">Ofensor
+            <input id="newOffenderName" type="text" required maxlength="60" class="mt-1 w-full rounded border border-slate-300 px-2 py-1.5 text-sm" placeholder="Nome do ofensor">
+          </label>
+          <label class="w-24 text-xs font-medium text-slate-700">Quantidade
+            <input id="newOffenderCount" type="number" required min="0" step="1" class="mt-1 w-full rounded border border-slate-300 px-2 py-1.5 text-sm" placeholder="0">
+          </label>
+          <button type="submit" class="bg-blue-900 text-white px-3 py-1.5 rounded text-sm font-semibold hover:bg-blue-800" aria-label="Adicionar ofensor" title="Adicionar ofensor">
+            <i class="bi bi-plus-lg" aria-hidden="true"></i>
+          </button>
+        </form>
+        <div class="p-3 flex-1 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+          <!-- TABELA DE OFENSORES -->
+          <div class="sm:col-span-5 overflow-x-auto">
+            <table class="w-full text-xs text-center border-collapse table-border">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 font-semibold">
+                  <th class="p-1.5 text-left pl-2">Ofensor</th>
+                  <th class="p-1.5">Qtd</th>
+                  <th class="p-1.5"><span class="visually-hidden">Ações</span></th>
+                </tr>
+              </thead>
+              <tbody id="offenderRows" class="divide-y divide-slate-200 font-medium text-[11px]">
+                <tr>
+                  <td class="p-1.5 text-left pl-2 bg-slate-50">CAMBIO_VOLUNTARIO</td>
+                  <td class="p-1.5">229</td>
+                  <td class="p-1.5"><button type="button" class="text-red-700 hover:text-red-900" data-remove-offender aria-label="Excluir CAMBIO_VOLUNTARIO" title="Excluir ofensor"><i class="bi bi-trash" aria-hidden="true"></i></button></td>
+                </tr>
+                <tr>
+                  <td class="p-1.5 text-left pl-2 bg-slate-50">EXCEPCIONES</td>
+                  <td class="p-1.5">131</td>
+                  <td class="p-1.5"><button type="button" class="text-red-700 hover:text-red-900" data-remove-offender aria-label="Excluir EXCEPCIONES" title="Excluir ofensor"><i class="bi bi-trash" aria-hidden="true"></i></button></td>
+                </tr>
+                <tr>
+                  <td class="p-1.5 text-left pl-2 bg-slate-50">CAMBIO_INVOLUNTARIO</td>
+                  <td class="p-1.5">131</td>
+                  <td class="p-1.5"><button type="button" class="text-red-700 hover:text-red-900" data-remove-offender aria-label="Excluir CAMBIO_INVOLUNTARIO" title="Excluir ofensor"><i class="bi bi-trash" aria-hidden="true"></i></button></td>
+                </tr>
+                <tr>
+                  <td class="p-1.5 text-left pl-2 bg-slate-50">CHECK-IN</td>
+                  <td class="p-1.5">100</td>
+                  <td class="p-1.5"><button type="button" class="text-red-700 hover:text-red-900" data-remove-offender aria-label="Excluir CHECK-IN" title="Excluir ofensor"><i class="bi bi-trash" aria-hidden="true"></i></button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- GRÁFICO DONUT -->
+          <div class="sm:col-span-7 flex flex-col items-center justify-center relative min-h-[190px]">
+            <h3 class="text-xs font-bold text-slate-600 mb-1">Pesquisas negativas</h3>
+            <div class="w-full h-[170px] relative">
+              <canvas id="chartOfensores"></canvas>
+              <p id="chartError" class="hidden absolute inset-0 grid place-items-center text-center text-xs text-red-600">Não foi possível carregar o gráfico. Verifique a conexão e recarregue a página.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOCO 3: CONFIABILIDADE DA AMOSTRA -->
+      <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden">
+        <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
+          3. Confiabilidade da Amostra
+        </div>
+        <div class="p-3">
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="bg-slate-50 border border-slate-200 rounded p-2">
+              <div class="text-[10px] uppercase font-bold text-slate-500">Chamadas</div>
+              <div id="sampleCalls" class="text-sm sm:text-base font-extrabold text-slate-800">1.029</div>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 rounded p-2">
+              <div class="text-[10px] uppercase font-bold text-slate-500">Analisadas</div>
+              <div id="sampleAnalyzed" class="text-sm sm:text-base font-extrabold text-blue-700">124</div>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 rounded p-2">
+              <div class="text-[10px] uppercase font-bold text-slate-500">Cobertura (analisadas / chamadas)</div>
+              <div id="coverageSample" data-calculated class="text-sm sm:text-base font-extrabold text-emerald-600">12,05%</div>
+            </div>
           </div>
         </div>
       </div>
@@ -416,10 +460,10 @@
 
   </div>
 
-  <!-- SEÇÃO INFERIOR (BLOCOS 6, 3 E 7) -->
+  <!-- SEÇÃO INFERIOR (BLOCOS 6 E 7) -->
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4">
     
-    <!-- ESQUERDA: BLOCO 6 + BLOCO 3 (COL 7) -->
+    <!-- ESQUERDA: BLOCO 6 (COL 7) -->
     <div class="lg:col-span-7 flex flex-col gap-4">
       
       <!-- BLOCO 6: INSIGHTS DA QUALIDADE -->
@@ -429,29 +473,6 @@
         </div>
         <div class="p-3 text-xs leading-relaxed text-slate-700 text-justify bg-slate-50/50">
           O diagnóstico geral da operação aponta o supervisor <strong>4888879</strong> como o principal gargalo de desempenho do contrato, apresentando a menor média global de qualidade (56,5%) e de FCR (53,9%), impulsionado por um grupo de 4 agentes críticos com aproveitamento inferior a 50% (Matheus com 25%, Lorena com 27%, Márcia com 42% e Adriele com 46%). Soma-se a isso um cenário de forte descontrole nos tempos operacionais da equipe, que acumula desde perdas extremas por inatividade e pausas fora do padrão (-44.360s e -34.871s) até estouros críticos no tempo de atendimento (+492.344s com o agente Caio), evidenciando falhas diretas no acompanhamento de aderência e na gestão da linha em tempo real.
-        </div>
-      </div>
-
-      <!-- BLOCO 3: CONFIABILIDADE DA AMOSTRA -->
-      <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden">
-        <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
-          3. Confiabilidade da Amostra
-        </div>
-        <div class="p-3">
-          <div class="grid grid-cols-3 gap-2 text-center">
-            <div class="bg-slate-50 border border-slate-200 rounded p-2">
-              <div class="text-[10px] uppercase font-bold text-slate-500">Chamadas</div>
-              <div id="sampleCalls" class="text-sm sm:text-base font-extrabold text-slate-800">1.029</div>
-            </div>
-            <div class="bg-slate-50 border border-slate-200 rounded p-2">
-              <div class="text-[10px] uppercase font-bold text-slate-500">Analisadas</div>
-              <div id="sampleAnalyzed" class="text-sm sm:text-base font-extrabold text-blue-700">124</div>
-            </div>
-            <div class="bg-slate-50 border border-slate-200 rounded p-2">
-              <div class="text-[10px] uppercase font-bold text-slate-500">Cobertura (analisadas / chamadas)</div>
-              <div id="coverageSample" data-calculated class="text-sm sm:text-base font-extrabold text-emerald-600">12,05%</div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -483,6 +504,12 @@
         sparkFcr: [70, 69, 72, 70],
         sparkQa: [75, 75, 76, 72]
       };
+      const defaultOffenders = [
+        { name: 'CAMBIO_VOLUNTARIO', count: '229' },
+        { name: 'EXCEPCIONES', count: '131' },
+        { name: 'CAMBIO_INVOLUNTARIO', count: '131' },
+        { name: 'CHECK-IN', count: '100' }
+      ];
       const sparklineSeries = Object.fromEntries(
         Object.entries(defaultSparklineSeries).map(([id, points]) => [id, [...points]])
       );
@@ -502,6 +529,49 @@
         .filter((element) => element.children.length === 0 && element.textContent.trim() && !element.closest('[data-editor-ignore]'));
       const originalValues = editableLeaves.map((element) => element.textContent);
 
+      function getOffenders() {
+        return Array.from(dashboard.querySelectorAll('#offenderRows tr'), (row) => ({
+          name: row.cells[0].textContent.trim(),
+          count: row.cells[1].textContent.trim()
+        }));
+      }
+
+      function renderOffenders(offenders) {
+        const rows = dashboard.querySelector('#offenderRows');
+        rows.replaceChildren();
+        offenders.forEach((offender) => {
+          const row = document.createElement('tr');
+          const nameCell = document.createElement('td');
+          nameCell.className = 'p-1.5 text-left pl-2 bg-slate-50';
+          nameCell.textContent = String(offender.name ?? '');
+          nameCell.contentEditable = String(isEditing);
+          nameCell.spellcheck = false;
+
+          const countCell = document.createElement('td');
+          countCell.className = 'p-1.5';
+          countCell.textContent = String(offender.count ?? '0');
+          countCell.contentEditable = String(isEditing);
+          countCell.spellcheck = false;
+
+          const actionCell = document.createElement('td');
+          actionCell.className = 'p-1.5';
+          const removeButton = document.createElement('button');
+          removeButton.type = 'button';
+          removeButton.dataset.removeOffender = '';
+          removeButton.className = 'text-red-700 hover:text-red-900';
+          removeButton.setAttribute('aria-label', `Excluir ${nameCell.textContent || 'ofensor'}`);
+          removeButton.title = 'Excluir ofensor';
+          const icon = document.createElement('i');
+          icon.className = 'bi bi-trash';
+          icon.setAttribute('aria-hidden', 'true');
+          removeButton.append(icon);
+          actionCell.append(removeButton);
+
+          row.append(nameCell, countCell, actionCell);
+          rows.append(row);
+        });
+      }
+
       editableLeaves.forEach((element, index) => {
         element.dataset.editKey = String(index);
       });
@@ -509,7 +579,7 @@
       function saveData() {
         try {
           const values = editableLeaves.map((element) => element.textContent);
-          localStorage.setItem(storageKey, JSON.stringify({ values, sparklineSeries }));
+          localStorage.setItem(storageKey, JSON.stringify({ values, sparklineSeries, offenders: getOffenders() }));
           saveStatus.textContent = 'Alterações salvas neste navegador';
         } catch (error) {
           saveStatus.textContent = 'Não foi possível salvar neste navegador';
@@ -522,6 +592,7 @@
           editableLeaves.forEach((element, index) => {
             if (typeof savedData.values[index] === 'string') element.textContent = savedData.values[index];
           });
+          if (Array.isArray(savedData.offenders)) renderOffenders(savedData.offenders);
           Object.keys(sparklineSeries).forEach((id) => {
             const points = savedData.sparklineSeries?.[id];
             if (Array.isArray(points) && points.length >= 2 && points.every(Number.isFinite)) {
@@ -569,6 +640,10 @@
           element.contentEditable = String(isEditing);
           element.spellcheck = false;
         });
+        dashboard.querySelectorAll('#offenderRows td:nth-child(-n+2)').forEach((cell) => {
+          cell.contentEditable = String(isEditing);
+          cell.spellcheck = false;
+        });
         event.currentTarget.setAttribute('aria-pressed', String(isEditing));
         event.currentTarget.textContent = isEditing ? 'Concluir edição' : 'Editar dados';
         saveStatus.textContent = isEditing ? 'Clique em qualquer texto ou valor para editar' : '';
@@ -580,6 +655,7 @@
         editableLeaves.forEach((element, index) => {
           element.textContent = originalValues[index];
         });
+        renderOffenders(defaultOffenders);
         Object.keys(sparklineSeries).forEach((id) => {
           sparklineSeries[id] = [...defaultSparklineSeries[id]];
         });
@@ -595,6 +671,29 @@
         updateCharts();
         window.clearTimeout(saveTimer);
         saveTimer = window.setTimeout(saveData, 300);
+      });
+
+      document.getElementById('addOffenderForm').addEventListener('submit', (event) => {
+        event.preventDefault();
+        const nameInput = document.getElementById('newOffenderName');
+        const countInput = document.getElementById('newOffenderCount');
+        const name = nameInput.value.trim();
+        if (!name || !countInput.validity.valid) return;
+        const offenders = getOffenders();
+        offenders.push({ name, count: countInput.value });
+        renderOffenders(offenders);
+        nameInput.value = '';
+        countInput.value = '';
+        updateCharts();
+        saveData();
+      });
+
+      dashboard.querySelector('#offenderRows').addEventListener('click', (event) => {
+        const removeButton = event.target.closest('[data-remove-offender]');
+        if (!removeButton) return;
+        removeButton.closest('tr').remove();
+        updateCharts();
+        saveData();
       });
 
       function parsePtBrNumber(text) {

@@ -438,6 +438,7 @@
                             <div class="descfooter">
                                 <p><b>Ação:</b> <span class="textfield" id="raction">—</span></p>
                                 <p><b>Retorno:</b> <span id="rreturn">24 horas</span></p>
+                                <p><b>Responsável / supervisor:</b> <span id="rresponsible">—</span></p>
                             </div>
                         </div>
                         <div class="foot">Qualidade · Uso interno</div>
@@ -538,7 +539,7 @@
         }
         function update() {
             const red = $('model').value === 'red'; $('report').className = red ? 'red' : 'blue'; $('rtitle').textContent = red ? 'Report de Desvio Inadmissível' : 'Report de Desvio de Conhecimento';
-            const fields = { agent: 'ragent', bp: 'rbp', cell: 'rcell', sup: 'rsup', date: 'rdate', duration: 'rduration', hour: 'rhour', callid: 'rcallid', nps: 'rnps', summary: 'rsummary', opportunity: 'ropp', action: 'raction', return: 'rreturn' };
+            const fields = { agent: 'ragent', bp: 'rbp', cell: 'rcell', sup: 'rsup', date: 'rdate', duration: 'rduration', hour: 'rhour', callid: 'rcallid', nps: 'rnps', summary: 'rsummary', opportunity: 'ropp', action: 'raction', return: 'rreturn', responsible: 'rresponsible' };
             Object.entries(fields).filter(([a]) => a !== 'summary').forEach(([a, b]) => $(b).textContent = $(a).value || '—');
             renderSummary($('summary').value || '—');
         }
@@ -557,10 +558,10 @@
             }
         };
         $('copy').onclick = async () => {
-            update(); let t = `${$('rtitle').textContent}\nAgente: ${$('agent').value} | RK: ${$('bp').value} | Célula: ${$('cell').value}\nSupervisor: ${$('sup').value}\nData: ${$('date').value} | Duração: ${$('duration').value} | Hora: ${$('hour').value}\nID: ${$('callid').value} | NPS: ${$('nps').value}\n\nResumo: ${$('summary').value}\n\nOportunidade: ${$('opportunity').value}\n\nAção: ${$('action').value} | Retorno: ${$('return').value}`;
+            update(); let t = `${$('rtitle').textContent}\nAgente: ${$('agent').value} | RK: ${$('bp').value} | Célula: ${$('cell').value}\nSupervisor: ${$('sup').value}\nData: ${$('date').value} | Duração: ${$('duration').value} | Hora: ${$('hour').value}\nID: ${$('callid').value} | NPS: ${$('nps').value}\n\nResumo: ${$('summary').value}\n\nOportunidade: ${$('opportunity').value}\n\nAção: ${$('action').value} | Retorno: ${$('return').value}\nResponsável / supervisor: ${$('responsible').value}`;
             try { await navigator.clipboard.writeText(t); alert('Texto do report copiado.') } catch (e) { alert(t) }
         };
-        ['agent', 'bp', 'cell', 'sup', 'date', 'duration', 'hour', 'callid', 'nps', 'summary', 'opportunity', 'action', 'return'].forEach(id => $(id).addEventListener('input', update));
+        ['agent', 'bp', 'cell', 'sup', 'date', 'duration', 'hour', 'callid', 'nps', 'summary', 'opportunity', 'action', 'return', 'responsible'].forEach(id => $(id).addEventListener('input', update));
     </script>
 </body>
 

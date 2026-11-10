@@ -107,6 +107,12 @@
     #dashboard .text-xs { font-size: 0.875rem; line-height: 1.25rem; }
     #dashboard [class~="text-[10px]"] { font-size: 0.75rem !important; line-height: 1rem; }
     #dashboard [class~="text-[11px]"] { font-size: 0.8125rem !important; line-height: 1.125rem; }
+    #chartOfensores.chart-3d {
+      filter: drop-shadow(0 8px 0 rgb(15 23 42 / 0.22));
+      transform: perspective(700px) rotateX(28deg) scaleY(0.9);
+      transform-origin: center center;
+      transition: filter 0.2s ease, transform 0.2s ease;
+    }
   </style>
 </head>
 <body class="p-2 sm:p-4 md:p-6 max-w-[1600px] mx-auto">
@@ -117,15 +123,10 @@
         <span class="brand-mark"><img class="latam-logo" src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Latam-logo_-v_%28Indigo%29.svg" alt="LATAM" width="76" height="24"></span>
         <span class="small fw-semibold">Qualidade</span>
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#radarNavigation" aria-controls="radarNavigation" aria-expanded="false" aria-label="Abrir menu">
-        <i class="bi bi-list fs-4" aria-hidden="true"></i><span>Menu</span>
-      </button>
-      <div class="collapse navbar-collapse" id="radarNavigation">
-        <div class="navbar-nav ms-lg-auto py-2 py-lg-0">
-          <a class="nav-link" href="index.html"><i class="bi bi-file-earmark-text" aria-hidden="true"></i>Gerador de Reports</a>
-          <a class="nav-link" href="qualidade.html"><i class="bi bi-bar-chart-line" aria-hidden="true"></i>Painel de Qualidade</a>
-          <a class="nav-link active" aria-current="page" href="radar.html"><i class="bi bi-radar" aria-hidden="true"></i>Radar de Oportunidades</a>
-        </div>
+      <div class="navbar-nav ms-lg-auto py-2 py-lg-0 w-full lg:w-auto">
+        <a class="nav-link" href="index.html"><i class="bi bi-file-earmark-text" aria-hidden="true"></i>Gerador de Reports</a>
+        <a class="nav-link" href="qualidade.html"><i class="bi bi-bar-chart-line" aria-hidden="true"></i>Painel de Qualidade</a>
+        <a class="nav-link active" aria-current="page" href="radar.html"><i class="bi bi-radar" aria-hidden="true"></i>Radar de Oportunidades</a>
       </div>
     </div>
   </nav>
@@ -175,7 +176,7 @@
                 <th class="p-2">Mês</th>
                 <th class="p-2">Supervisor</th>
                 <th class="p-2 min-w-[110px]">Tendência<br><span class="text-[10px] font-normal text-slate-500">4 últimas semanas</span></th>
-                <th class="p-2">Gap</th>
+                <th class="p-2">Gap<br><span class="text-[10px] font-normal text-slate-500">Atual - anterior</span></th>
                 <th class="p-2">Status</th>
               </tr>
             </thead>
@@ -236,21 +237,29 @@
           </table>
         </div>
       </div>
-      <details open data-editor-ignore class="mx-3 my-2 rounded border border-slate-200 bg-slate-50 p-2">
+      <details open data-editor-ignore class="my-2">
         <summary class="cursor-pointer text-xs font-semibold text-slate-700">Dados das tendências (4 últimas semanas)</summary>
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2 mt-2">
-          <label class="text-[11px] font-medium text-slate-600">NPS
-            <input data-series-input="sparkNps" type="text" inputmode="decimal" value="20; 29; 52; 41" aria-label="Valores da tendência NPS" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-          </label>
-          <label class="text-[11px] font-medium text-slate-600">TMO
-            <input data-series-input="sparkTmo" type="text" inputmode="decimal" value="856; 816; 770; 844" aria-label="Valores da tendência TMO" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-          </label>
-          <label class="text-[11px] font-medium text-slate-600">FCR
-            <input data-series-input="sparkFcr" type="text" inputmode="decimal" value="70; 69; 72; 70" aria-label="Valores da tendência FCR" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-          </label>
-          <label class="text-[11px] font-medium text-slate-600">QA
-            <input data-series-input="sparkQa" type="text" inputmode="decimal" value="75; 75; 76; 72" aria-label="Valores da tendência QA" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-          </label>
+          <div class="mx-3 my-2 rounded border border-slate-200 bg-slate-50 p-2">
+            <label class="text-[11px] font-medium text-slate-600">NPS
+              <input data-series-input="sparkNps" type="text" inputmode="decimal" value="20; 29; 52; 41" aria-label="Valores da tendência NPS" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+            </label>
+          </div>
+          <div class="mx-3 my-2 rounded border border-slate-200 bg-slate-50 p-2">
+            <label class="text-[11px] font-medium text-slate-600">TMO
+              <input data-series-input="sparkTmo" type="text" inputmode="decimal" value="856; 816; 770; 844" aria-label="Valores da tendência TMO" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+            </label>
+          </div>
+          <div class="mx-3 my-2 rounded border border-slate-200 bg-slate-50 p-2">
+            <label class="text-[11px] font-medium text-slate-600">FCR
+              <input data-series-input="sparkFcr" type="text" inputmode="decimal" value="70; 69; 72; 70" aria-label="Valores da tendência FCR" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+            </label>
+          </div>
+          <div class="mx-3 my-2 rounded border border-slate-200 bg-slate-50 p-2">
+            <label class="text-[11px] font-medium text-slate-600">QA
+              <input data-series-input="sparkQa" type="text" inputmode="decimal" value="75; 75; 76; 72" aria-label="Valores da tendência QA" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+            </label>
+          </div>
         </div>
         <p class="mt-1 text-[10px] text-slate-500">Separe os quatro valores por ponto e vírgula. Os gráficos são independentes das células da tabela.</p>
       </details>
@@ -317,6 +326,10 @@
           <!-- GRÁFICO DONUT -->
           <div class="sm:col-span-7 flex flex-col items-center justify-center relative min-h-[190px]">
             <h3 class="text-xs font-bold text-slate-600 mb-1">Pesquisas negativas</h3>
+            <div class="flex gap-1 mb-2" role="group" aria-label="Modo de exibição do gráfico" data-html2canvas-ignore>
+              <button type="button" data-chart-mode="2d" aria-pressed="true" class="rounded border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100">2D</button>
+              <button type="button" data-chart-mode="3d" aria-pressed="false" class="rounded border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100">3D</button>
+            </div>
             <div class="w-full h-[170px] relative">
               <canvas id="chartOfensores"></canvas>
               <p id="chartError" class="hidden absolute inset-0 grid place-items-center text-center text-xs text-red-600">Não foi possível carregar o gráfico. Verifique a conexão e recarregue a página.</p>
@@ -514,6 +527,7 @@
         Object.entries(defaultSparklineSeries).map(([id, points]) => [id, [...points]])
       );
       let isEditing = false;
+      let chartMode = '2d';
       const textWalker = document.createTreeWalker(dashboard, NodeFilter.SHOW_TEXT);
       const textNodes = [];
       while (textWalker.nextNode()) textNodes.push(textWalker.currentNode);
@@ -579,7 +593,7 @@
       function saveData() {
         try {
           const values = editableLeaves.map((element) => element.textContent);
-          localStorage.setItem(storageKey, JSON.stringify({ values, sparklineSeries, offenders: getOffenders() }));
+          localStorage.setItem(storageKey, JSON.stringify({ values, sparklineSeries, offenders: getOffenders(), chartMode }));
           saveStatus.textContent = 'Alterações salvas neste navegador';
         } catch (error) {
           saveStatus.textContent = 'Não foi possível salvar neste navegador';
@@ -593,6 +607,7 @@
             if (typeof savedData.values[index] === 'string') element.textContent = savedData.values[index];
           });
           if (Array.isArray(savedData.offenders)) renderOffenders(savedData.offenders);
+          if (savedData.chartMode === '2d' || savedData.chartMode === '3d') chartMode = savedData.chartMode;
           Object.keys(sparklineSeries).forEach((id) => {
             const points = savedData.sparklineSeries?.[id];
             if (Array.isArray(points) && points.length >= 2 && points.every(Number.isFinite)) {
@@ -656,6 +671,8 @@
           element.textContent = originalValues[index];
         });
         renderOffenders(defaultOffenders);
+        chartMode = '2d';
+        applyChartMode();
         Object.keys(sparklineSeries).forEach((id) => {
           sparklineSeries[id] = [...defaultSparklineSeries[id]];
         });
@@ -720,21 +737,25 @@
         rows.forEach((row) => {
           const meta = parsePtBrNumber(row.cells[1].textContent);
           const supervisor = parsePtBrNumber(row.cells[5].textContent);
-          const gap = supervisor - meta;
+          const previousWeek = parsePtBrNumber(row.cells[2].textContent);
+          const currentWeek = parsePtBrNumber(row.cells[3].textContent);
+          const weeklyGap = currentWeek - previousWeek;
+          const targetGap = supervisor - meta;
           const direction = row.dataset.direction;
-          const meetsTarget = direction === 'lower' ? gap <= 0 : gap >= 0;
+          const meetsTarget = direction === 'lower' ? targetGap <= 0 : targetGap >= 0;
           const threshold = Math.abs(meta) * Number(row.dataset.criticalLimit || 0.2);
-          const status = meetsTarget ? 'dentro' : Math.abs(gap) > threshold ? 'critico' : 'atencao';
+          const status = meetsTarget ? 'dentro' : Math.abs(targetGap) > threshold ? 'critico' : 'atencao';
           const label = status === 'dentro' ? 'DENTRO' : status === 'critico' ? 'CRÍTICO' : 'ATENÇÃO';
-          const formattedGap = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 }).format(gap);
+          const formattedGap = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 }).format(weeklyGap);
           const gapFragment = row.cells[7].firstElementChild;
           if (gapFragment) gapFragment.textContent = `${formattedGap}${row.dataset.unit || ''}`;
           else row.cells[7].textContent = `${formattedGap}${row.dataset.unit || ''}`;
 
-          row.cells[7].classList.remove('text-red-600', 'bg-red-50', 'text-amber-700', 'bg-amber-50', 'text-green-700', 'bg-green-50');
+          row.cells[7].classList.remove('text-red-600', 'bg-red-50', 'text-green-700', 'bg-green-50', 'text-slate-600', 'bg-slate-100');
+          const improved = direction === 'lower' ? weeklyGap < 0 : weeklyGap > 0;
           row.cells[7].classList.add(
-            status === 'critico' ? 'text-red-600' : status === 'atencao' ? 'text-amber-700' : 'text-green-700',
-            status === 'critico' ? 'bg-red-50' : status === 'atencao' ? 'bg-amber-50' : 'bg-green-50'
+            weeklyGap === 0 ? 'text-slate-600' : improved ? 'text-green-700' : 'text-red-600',
+            weeklyGap === 0 ? 'bg-slate-100' : improved ? 'bg-green-50' : 'bg-red-50'
           );
 
           const badge = row.cells[8].querySelector('span');
@@ -747,6 +768,24 @@
       let offenderChart = null;
       const chartCanvas = document.getElementById('chartOfensores');
       const chartError = document.getElementById('chartError');
+      function applyChartMode() {
+        chartCanvas.classList.toggle('chart-3d', chartMode === '3d');
+        dashboard.querySelectorAll('[data-chart-mode]').forEach((button) => {
+          const selected = button.dataset.chartMode === chartMode;
+          button.setAttribute('aria-pressed', String(selected));
+          button.classList.toggle('bg-blue-900', selected);
+          button.classList.toggle('text-white', selected);
+        });
+      }
+
+      dashboard.querySelectorAll('[data-chart-mode]').forEach((button) => {
+        button.addEventListener('click', () => {
+          chartMode = button.dataset.chartMode;
+          applyChartMode();
+          saveData();
+        });
+      });
+
       const percentageLabelsPlugin = {
         id: 'percentageLabels',
         afterDatasetsDraw(chart) {
@@ -807,6 +846,7 @@
       } else if (chartError) {
         chartError.classList.remove('hidden');
       }
+      applyChartMode();
 
       function drawSparkline(canvasId, points, color = '#2563eb') {
         const canvas = document.getElementById(canvasId);

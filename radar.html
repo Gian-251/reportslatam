@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radar de Oportunidades – IA LATAM</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Chart.js via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f1f5f9;
+      color: #1e293b;
+    }
+    .header-bg {
+      background-color: #0b2545;
+    }
+    .sub-header-bg {
+      background-color: #133a68;
+    }
+    .table-border {
+      border: 1px solid #cbd5e1;
+    }
+    .table-border th, .table-border td {
+      border: 1px solid #cbd5e1;
+    }
+    .badge-critico {
+      background-color: #dc2626;
+      color: #ffffff;
+      padding: 2px 10px;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 0.75rem;
+      display: inline-block;
+    }
+    .badge-atencao {
+      background-color: #fef08a;
+      color: #854d0e;
+      border: 1px solid #facc15;
+      padding: 2px 10px;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 0.75rem;
+      display: inline-block;
+    }
+    .badge-dentro {
+      background-color: #bbf7d0;
+      color: #166534;
+      padding: 2px 10px;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 0.75rem;
+      display: inline-block;
+    }
+    .app-navbar {
+      background: #0b2850;
+      border-bottom: 3px solid #e31837;
+      box-shadow: 0 3px 12px #102b4520;
+      margin: -0.5rem -0.5rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 1020;
+    }
+    @media (min-width: 640px) {
+      .app-navbar { margin: -1rem -1rem 1rem; }
+    }
+    @media (min-width: 768px) {
+      .app-navbar { margin: -1.5rem -1.5rem 1rem; }
+    }
+    .app-navbar .navbar-brand,
+    .app-navbar .nav-link { color: white; }
+    .app-navbar .nav-link {
+      border-radius: 6px;
+      padding: 9px 13px;
+      transition: background-color .18s ease, color .18s ease;
+    }
+    .app-navbar .nav-link:hover,
+    .app-navbar .nav-link.active { background: #ffffff1a; color: white; }
+    .app-navbar .nav-link i { margin-right: 6px; }
+    .brand-mark {
+      background: white;
+      border-radius: 4px;
+      display: inline-flex;
+      padding: 3px 6px;
+    }
+    .latam-logo { height: 24px; width: 76px; }
+    .app-navbar .navbar-toggler {
+      align-items: center;
+      border-color: #ffffff80;
+      color: white;
+      display: inline-flex;
+      gap: 7px;
+    }
+    .app-navbar .navbar-toggler:focus { box-shadow: 0 0 0 .2rem #ffffff55; }
+    #dashboard [contenteditable="true"]:focus {
+      outline: 2px solid #2563eb;
+      outline-offset: 1px;
+      background-color: #eff6ff;
+    }
+  </style>
+</head>
+<body class="p-2 sm:p-4 md:p-6 max-w-[1600px] mx-auto">
+
+  <nav class="navbar navbar-expand-lg app-navbar" aria-label="Menu de aplicativo">
+    <div class="container-fluid px-3 px-lg-4">
+      <a class="navbar-brand d-flex align-items-center gap-2 me-3" href="index.html">
+        <span class="brand-mark"><img class="latam-logo" src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Latam-logo_-v_%28Indigo%29.svg" alt="LATAM" width="76" height="24"></span>
+        <span class="small fw-semibold">Qualidade</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#radarNavigation" aria-controls="radarNavigation" aria-expanded="false" aria-label="Abrir menu">
+        <i class="bi bi-list fs-4" aria-hidden="true"></i><span>Menu</span>
+      </button>
+      <div class="collapse navbar-collapse" id="radarNavigation">
+        <div class="navbar-nav ms-lg-auto py-2 py-lg-0">
+          <a class="nav-link" href="index.html"><i class="bi bi-file-earmark-text" aria-hidden="true"></i>Gerador de Reports</a>
+          <a class="nav-link" href="qualidade.html"><i class="bi bi-bar-chart-line" aria-hidden="true"></i>Painel de Qualidade</a>
+          <a class="nav-link active" aria-current="page" href="radar.html"><i class="bi bi-radar" aria-hidden="true"></i>Radar de Oportunidades</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="flex flex-wrap justify-end gap-2 mb-3" role="toolbar" aria-label="Controles do relatório" data-html2canvas-ignore>
+    <button id="downloadJpg" type="button" class="bg-slate-700 text-white px-3 py-2 rounded text-xs font-semibold hover:bg-slate-600">Baixar JPG</button>
+    <button id="editToggle" type="button" class="bg-blue-900 text-white px-3 py-2 rounded text-xs font-semibold hover:bg-blue-800" aria-pressed="false">Editar dados</button>
+    <button id="saveData" type="button" class="bg-emerald-700 text-white px-3 py-2 rounded text-xs font-semibold hover:bg-emerald-600">Salvar</button>
+    <button id="resetData" type="button" class="bg-white text-slate-700 border border-slate-300 px-3 py-2 rounded text-xs font-semibold hover:bg-slate-50">Restaurar original</button>
+    <span id="saveStatus" class="self-center text-xs text-slate-500" role="status" aria-live="polite"></span>
+  </div>
+
+  <main id="dashboard">
+
+  <!-- CABEÇALHO PRINCIPAL -->
+  <div class="header-bg text-white rounded-t-lg p-3 sm:p-4 flex flex-col md:flex-row justify-between items-center shadow-md">
+    <h1 class="text-lg sm:text-xl md:text-2xl font-bold tracking-wide text-center md:text-left uppercase">
+      Radar de Oportunidades – IA LATAM
+    </h1>
+    <div class="flex flex-wrap gap-2 mt-2 md:mt-0 text-xs sm:text-sm font-medium">
+      <div class="bg-blue-950/80 px-3 py-1.5 rounded border border-blue-400/30">
+        <span class="text-blue-300">Período:</span> 01/11/2026 à 08/11/2026
+      </div>
+      <div class="bg-blue-950/80 px-3 py-1.5 rounded border border-blue-400/30">
+        <span class="text-blue-300">Cobertura IA:</span> <span id="coverageHeader" data-calculated>12,05%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEÇÃO SUPERIOR (BLOCOS 1 E 2) -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4">
+    
+    <!-- BLOCO 1: CONSOLIDADO DE INDICADORES (COL 7) -->
+    <div class="lg:col-span-7 bg-white rounded-lg shadow border border-slate-200 overflow-hidden flex flex-col justify-between">
+      <div>
+        <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
+          1. Consolidado de Indicadores
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-center border-collapse table-border">
+            <thead>
+              <tr class="bg-slate-100 text-slate-700 font-semibold">
+                <th class="p-2">Indicador</th>
+                <th class="p-2">Meta</th>
+                <th class="p-2">Sem. Ant.</th>
+                <th class="p-2">Sem. Atual</th>
+                <th class="p-2">Mês</th>
+                <th class="p-2">Supervisor</th>
+                <th class="p-2 min-w-[110px]">Tendência<br><span class="text-[10px] font-normal text-slate-500">4 últimas semanas</span></th>
+                <th class="p-2">Gap</th>
+                <th class="p-2">Status</th>
+              </tr>
+            </thead>
+            <tbody id="indicatorRows" class="divide-y divide-slate-200">
+              <tr class="hover:bg-slate-50 transition" data-direction="higher" data-critical-limit="0.2">
+                <td class="p-2 font-bold bg-slate-50">NPS</td>
+                <td class="p-2">60</td>
+                <td class="p-2">52</td>
+                <td class="p-2">29</td>
+                <td class="p-2">33</td>
+                <td class="p-2 text-red-600 font-medium">-60</td>
+                <td class="p-1 align-middle">
+                  <canvas id="sparkNps" width="110" height="38" class="mx-auto" aria-label="Tendência NPS nas quatro últimas semanas"></canvas>
+                </td>
+                <td class="p-2 font-bold text-red-600 bg-red-50">-120</td>
+                <td class="p-2"><span class="badge-critico">CRÍTICO</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50 transition" data-direction="lower" data-critical-limit="0.2">
+                <td class="p-2 font-bold bg-slate-50">TMO</td>
+                <td class="p-2">900</td>
+                <td class="p-2">816</td>
+                <td class="p-2">856</td>
+                <td class="p-2">861</td>
+                <td class="p-2">940</td>
+                <td class="p-1 align-middle">
+                  <canvas id="sparkTmo" width="110" height="38" class="mx-auto" aria-label="Tendência TMO nas quatro últimas semanas"></canvas>
+                </td>
+                <td class="p-2 font-bold bg-amber-50 text-amber-700">40,00</td>
+                <td class="p-2"><span class="badge-atencao">ATENÇÃO</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50 transition" data-direction="higher" data-critical-limit="0.2" data-unit="%">
+                <td class="p-2 font-bold bg-slate-50">FCR</td>
+                <td class="p-2">65%</td>
+                <td class="p-2">69%</td>
+                <td class="p-2">70%</td>
+                <td class="p-2">70%</td>
+                <td class="p-2">58%</td>
+                <td class="p-1 align-middle">
+                  <canvas id="sparkFcr" width="110" height="38" class="mx-auto" aria-label="Tendência FCR nas quatro últimas semanas"></canvas>
+                </td>
+                <td class="p-2 font-bold bg-amber-50 text-amber-700">7%</td>
+                <td class="p-2"><span class="badge-atencao">ATENÇÃO</span></td>
+              </tr>
+              <tr class="hover:bg-slate-50 transition" data-direction="higher" data-critical-limit="0.2" data-unit="%">
+                <td class="p-2 font-bold bg-slate-50">QA</td>
+                <td class="p-2">90%</td>
+                <td class="p-2">75%</td>
+                <td class="p-2">75%</td>
+                <td class="p-2">75%</td>
+                <td class="p-2">74%</td>
+                <td class="p-1 align-middle">
+                  <canvas id="sparkQa" width="110" height="38" class="mx-auto" aria-label="Tendência QA nas quatro últimas semanas"></canvas>
+                </td>
+                <td class="p-2 font-bold bg-amber-50 text-amber-700">16%</td>
+                <td class="p-2"><span class="badge-atencao">ATENÇÃO</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <details open data-editor-ignore class="mx-3 my-2 rounded border border-slate-200 bg-slate-50 p-2">
+        <summary class="cursor-pointer text-xs font-semibold text-slate-700">Dados das tendências (4 últimas semanas)</summary>
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2 mt-2">
+          <label class="text-[11px] font-medium text-slate-600">NPS
+            <input data-series-input="sparkNps" type="text" inputmode="decimal" value="20; 29; 52; 41" aria-label="Valores da tendência NPS" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+          </label>
+          <label class="text-[11px] font-medium text-slate-600">TMO
+            <input data-series-input="sparkTmo" type="text" inputmode="decimal" value="856; 816; 770; 844" aria-label="Valores da tendência TMO" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+          </label>
+          <label class="text-[11px] font-medium text-slate-600">FCR
+            <input data-series-input="sparkFcr" type="text" inputmode="decimal" value="70; 69; 72; 70" aria-label="Valores da tendência FCR" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+          </label>
+          <label class="text-[11px] font-medium text-slate-600">QA
+            <input data-series-input="sparkQa" type="text" inputmode="decimal" value="75; 75; 76; 72" aria-label="Valores da tendência QA" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+          </label>
+        </div>
+        <p class="mt-1 text-[10px] text-slate-500">Separe os quatro valores por ponto e vírgula. Os gráficos são independentes das células da tabela.</p>
+      </details>
+      <!-- LEGENDA DA TABELA DE INDICADORES -->
+      <div class="p-2 bg-slate-50 text-[10px] sm:text-xs text-slate-600 border-t border-slate-200">
+        <span class="font-bold text-red-600">CRÍTICO:</span> Desvio adverso acima de 20% da meta &nbsp;|&nbsp; 
+        <span class="font-bold text-amber-600">ATENÇÃO:</span> Fora da meta até 20% &nbsp;|&nbsp; 
+        <span class="font-bold text-green-600">DENTRO:</span> Meta atingida
+      </div>
+    </div>
+
+    <!-- BLOCO 2: IMPACTO DOS OFENSORES (COL 5) -->
+    <div class="lg:col-span-5 bg-white rounded-lg shadow border border-slate-200 overflow-hidden flex flex-col">
+      <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
+        2. Impacto dos Ofensores
+      </div>
+      <div class="p-3 flex-1 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+        <!-- TABELA DE OFENSORES -->
+        <div class="sm:col-span-5 overflow-x-auto">
+          <table class="w-full text-xs text-center border-collapse table-border">
+            <thead>
+              <tr class="bg-slate-100 text-slate-700 font-semibold">
+                <th class="p-1.5 text-left pl-2">Ofensor</th>
+                <th class="p-1.5">Qtd</th>
+              </tr>
+            </thead>
+            <tbody id="offenderRows" class="divide-y divide-slate-200 font-medium text-[11px]">
+              <tr>
+                <td class="p-1.5 text-left pl-2 bg-slate-50">CAMBIO_VOLUNTARIO</td>
+                <td class="p-1.5">229</td>
+              </tr>
+              <tr>
+                <td class="p-1.5 text-left pl-2 bg-slate-50">EXCEPCIONES</td>
+                <td class="p-1.5">131</td>
+              </tr>
+              <tr>
+                <td class="p-1.5 text-left pl-2 bg-slate-50">CAMBIO_INVOLUNTARIO</td>
+                <td class="p-1.5">131</td>
+              </tr>
+              <tr>
+                <td class="p-1.5 text-left pl-2 bg-slate-50">CHECK-IN</td>
+                <td class="p-1.5">100</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- GRÁFICO DONUT -->
+        <div class="sm:col-span-7 flex flex-col items-center justify-center relative min-h-[190px]">
+          <h3 class="text-xs font-bold text-slate-600 mb-1">Pesquisas negativas</h3>
+          <div class="w-full h-[170px] relative">
+            <canvas id="chartOfensores"></canvas>
+            <p id="chartError" class="hidden absolute inset-0 grid place-items-center text-center text-xs text-red-600">Não foi possível carregar o gráfico. Verifique a conexão e recarregue a página.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SEÇÃO INTERMEDIÁRIA (BLOCOS 4 E 5) -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4">
+    
+    <!-- BLOCO 4: PRIORIZAÇÃO DE INVESTIGAÇÃO (COL 7) -->
+    <div class="lg:col-span-7 bg-white rounded-lg shadow border border-slate-200 overflow-hidden">
+      <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
+        4. Priorização de Investigação
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs border-collapse table-border">
+          <thead>
+            <tr class="bg-slate-100 text-slate-700 font-semibold text-center">
+              <th class="p-2 text-left">Colaborador</th>
+              <th class="p-2">NPS IA</th>
+              <th class="p-2">Pesq.</th>
+              <th class="p-2">NPS LATAM</th>
+              <th class="p-2">Dif.</th>
+              <th class="p-2 text-left min-w-[180px]">Motivo</th>
+              <th class="p-2 text-left">Classificação</th>
+              <th class="p-2">Prior.</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 text-[11px]">
+            <tr class="hover:bg-slate-50">
+              <td class="p-2 font-semibold text-slate-800">MATHEUS SANTOS DE SOUSA</td>
+              <td class="p-2 text-center text-red-600 font-bold">-100</td>
+              <td class="p-2 text-center text-slate-400">-</td>
+              <td class="p-2 text-center text-slate-400">-</td>
+              <td class="p-2 text-center text-slate-400">-</td>
+              <td class="p-2 leading-tight">Pior nota global (25%), FCR em 25%, NPS -100 e elevado tempo negativo (-44.360s).</td>
+              <td class="p-2 bg-slate-50">Qualidade Iniciante / Baixo Desempenho Operacional</td>
+              <td class="p-2 text-center font-medium">Baixa</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-2 font-semibold text-slate-800">LORENA STEFHANE MACEDO FRAGA</td>
+              <td class="p-2 text-center font-bold">0</td>
+              <td class="p-2 text-center text-slate-400">-</td>
+              <td class="p-2 text-center text-slate-400">-</td>
+              <td class="p-2 text-center text-slate-400">-</td>
+              <td class="p-2 leading-tight">Segunda pior nota (27%), FCR em 27% e delta de NPS em -100.</td>
+              <td class="p-2 bg-slate-50">Qualidade Iniciante / Incumprimento de Métricas</td>
+              <td class="p-2 text-center font-medium">Baixa</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-2 font-semibold text-slate-800">MARCIA QUEIROZ MORAIS</td>
+              <td class="p-2 text-center font-bold">0</td>
+              <td class="p-2 text-center text-slate-400">-</td>
+              <td class="p-2 text-center text-slate-400">-</td>
+              <td class="p-2 text-center text-slate-400">-</td>
+              <td class="p-2 leading-tight">Nota de 42%, FCR de 42%, precisão baixa (61%) e tempo negativo (-26.541s).</td>
+              <td class="p-2 bg-slate-50">Desempenho Insuficiente / Produtividade</td>
+              <td class="p-2 text-center font-bold text-amber-700 bg-amber-50">MÉDIA</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-2 font-semibold text-slate-800">ADRIELE DE JESUS BOAVENTURA</td>
+              <td class="p-2 text-center text-red-600 font-bold">-100</td>
+              <td class="p-2 text-center text-slate-400">-</td>
+              <td class="p-2 text-center text-slate-400">-</td>
+              <td class="p-2 text-center text-slate-400">-</td>
+              <td class="p-2 leading-tight">Nota de 46%, FCR em 46% e NPS/Delta zerados em -100.</td>
+              <td class="p-2 bg-slate-50">Aderência ao Processo / Baixa Qualidade</td>
+              <td class="p-2 text-center font-bold text-amber-700 bg-amber-50">MÉDIA</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BLOCO 5: PLANO DE AÇÃO (COL 5) -->
+    <div class="lg:col-span-5 bg-white rounded-lg shadow border border-slate-200 overflow-hidden flex flex-col">
+      <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
+        5. Plano de Ação
+      </div>
+      <div class="overflow-x-auto flex-1">
+        <table class="w-full text-xs border-collapse table-border h-full">
+          <thead>
+            <tr class="bg-slate-100 text-slate-700 font-semibold text-center">
+              <th class="p-2 text-left">Problema</th>
+              <th class="p-2 text-left">Ação</th>
+              <th class="p-2">Responsável</th>
+              <th class="p-2">Prazo</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200 text-[11px]">
+            <tr class="hover:bg-slate-50">
+              <td class="p-2 font-semibold text-slate-800 bg-slate-50">Baixo Desempenho Global da Equipa 4888879</td>
+              <td class="p-2">Início imediato de Feedbacks</td>
+              <td class="p-2 text-center font-medium">Supervisor</td>
+              <td class="p-2 text-center font-bold text-slate-700">Imediato</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-2 font-semibold text-slate-800 bg-slate-50">Agentes Críticos Ofensores</td>
+              <td class="p-2">Aplicação de feedbacks pontuais individuais, escutas assistidas diárias e alinhamento de argumentação/processos.</td>
+              <td class="p-2 text-center font-medium">Supervisor / Qualidade</td>
+              <td class="p-2 text-center font-bold text-slate-700">Uma semana</td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+              <td class="p-2 font-semibold text-slate-800 bg-slate-50">Baixo Desempenho em FCR</td>
+              <td class="p-2">Aplicação de Quiz sobre Procedimentos</td>
+              <td class="p-2 text-center font-medium">Qualidade</td>
+              <td class="p-2 text-center font-bold text-slate-700">Uma semana</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SEÇÃO INFERIOR (BLOCOS 6, 3 E 7) -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4">
+    
+    <!-- ESQUERDA: BLOCO 6 + BLOCO 3 (COL 7) -->
+    <div class="lg:col-span-7 flex flex-col gap-4">
+      
+      <!-- BLOCO 6: INSIGHTS DA QUALIDADE -->
+      <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden">
+        <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
+          6. Insights da Qualidade
+        </div>
+        <div class="p-3 text-xs leading-relaxed text-slate-700 text-justify bg-slate-50/50">
+          O diagnóstico geral da operação aponta o supervisor <strong>4888879</strong> como o principal gargalo de desempenho do contrato, apresentando a menor média global de qualidade (56,5%) e de FCR (53,9%), impulsionado por um grupo de 4 agentes críticos com aproveitamento inferior a 50% (Matheus com 25%, Lorena com 27%, Márcia com 42% e Adriele com 46%). Soma-se a isso um cenário de forte descontrole nos tempos operacionais da equipe, que acumula desde perdas extremas por inatividade e pausas fora do padrão (-44.360s e -34.871s) até estouros críticos no tempo de atendimento (+492.344s com o agente Caio), evidenciando falhas diretas no acompanhamento de aderência e na gestão da linha em tempo real.
+        </div>
+      </div>
+
+      <!-- BLOCO 3: CONFIABILIDADE DA AMOSTRA -->
+      <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden">
+        <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
+          3. Confiabilidade da Amostra
+        </div>
+        <div class="p-3">
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="bg-slate-50 border border-slate-200 rounded p-2">
+              <div class="text-[10px] uppercase font-bold text-slate-500">Chamadas</div>
+              <div id="sampleCalls" class="text-sm sm:text-base font-extrabold text-slate-800">1.029</div>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 rounded p-2">
+              <div class="text-[10px] uppercase font-bold text-slate-500">Analisadas</div>
+              <div id="sampleAnalyzed" class="text-sm sm:text-base font-extrabold text-blue-700">124</div>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 rounded p-2">
+              <div class="text-[10px] uppercase font-bold text-slate-500">Cobertura (analisadas / chamadas)</div>
+              <div id="coverageSample" data-calculated class="text-sm sm:text-base font-extrabold text-emerald-600">12,05%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- DIREITA: BLOCO 7 (COL 5) -->
+    <div class="lg:col-span-5 bg-white rounded-lg shadow border border-slate-200 overflow-hidden flex flex-col">
+      <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
+        7. Parecer da Qualidade
+      </div>
+      <div class="p-3 text-xs leading-relaxed text-slate-700 text-justify bg-slate-50/50 flex-1">
+        Diante da não conformidade dos indicadores em relação à meta operacional de 70-80%, a Qualidade recomenda a aplicação imediata de um Plano de Ação Focalizado (PIR) com duração de 30 dias na equipe 4888879. As tratativas devem priorizar o treinamento comportamental para os 4 agentes ofensores (foco em navegação de sistemas, redução de silêncio e resolutividade), alinhamentos rígidos sobre o cumprimento da escala de pausas e a execução diária de escutas assistidas pelos supervisores para sanar os desvios de conduta e elevar a média da equipe ao patamar mínimo aceitável.
+      </div>
+    </div>
+
+  </div>
+
+  </main>
+
+  <!-- SCRIPTS JS PARA RENDERIZAÇÃO DOS GRÁFICOS -->
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const dashboard = document.getElementById('dashboard');
+      const storageKey = 'radarOportunidades.v2';
+      const saveStatus = document.getElementById('saveStatus');
+      const defaultSparklineSeries = {
+        sparkNps: [20, 29, 52, 41],
+        sparkTmo: [856, 816, 770, 844],
+        sparkFcr: [70, 69, 72, 70],
+        sparkQa: [75, 75, 76, 72]
+      };
+      const sparklineSeries = Object.fromEntries(
+        Object.entries(defaultSparklineSeries).map(([id, points]) => [id, [...points]])
+      );
+      let isEditing = false;
+      const textWalker = document.createTreeWalker(dashboard, NodeFilter.SHOW_TEXT);
+      const textNodes = [];
+      while (textWalker.nextNode()) textNodes.push(textWalker.currentNode);
+      textNodes.forEach((textNode) => {
+        if (!textNode.textContent.trim() || textNode.parentElement.closest('[data-editor-ignore]')) return;
+        const editableFragment = document.createElement('span');
+        editableFragment.dataset.editableFragment = '';
+        editableFragment.textContent = textNode.textContent;
+        textNode.replaceWith(editableFragment);
+      });
+
+      const editableLeaves = Array.from(dashboard.querySelectorAll('*'))
+        .filter((element) => element.children.length === 0 && element.textContent.trim() && !element.closest('[data-editor-ignore]'));
+      const originalValues = editableLeaves.map((element) => element.textContent);
+
+      editableLeaves.forEach((element, index) => {
+        element.dataset.editKey = String(index);
+      });
+
+      function saveData() {
+        try {
+          const values = editableLeaves.map((element) => element.textContent);
+          localStorage.setItem(storageKey, JSON.stringify({ values, sparklineSeries }));
+          saveStatus.textContent = 'Alterações salvas neste navegador';
+        } catch (error) {
+          saveStatus.textContent = 'Não foi possível salvar neste navegador';
+        }
+      }
+
+      try {
+        const savedData = JSON.parse(localStorage.getItem(storageKey) || 'null');
+        if (savedData && Array.isArray(savedData.values)) {
+          editableLeaves.forEach((element, index) => {
+            if (typeof savedData.values[index] === 'string') element.textContent = savedData.values[index];
+          });
+          Object.keys(sparklineSeries).forEach((id) => {
+            const points = savedData.sparklineSeries?.[id];
+            if (Array.isArray(points) && points.length >= 2 && points.every(Number.isFinite)) {
+              sparklineSeries[id] = points;
+            }
+          });
+        }
+      } catch (error) {
+        saveStatus.textContent = 'Não foi possível carregar dados salvos';
+      }
+
+      function syncSeriesInputs() {
+        Object.keys(sparklineSeries).forEach((id) => {
+          const input = dashboard.querySelector(`[data-series-input="${id}"]`);
+          if (input) input.value = sparklineSeries[id].join('; ');
+        });
+      }
+
+      syncSeriesInputs();
+
+      dashboard.querySelectorAll('[data-series-input]').forEach((input) => {
+        input.addEventListener('input', () => {
+          const points = input.value.split(';').map((value) => Number(value.trim().replace(',', '.')));
+          if (points.length !== 4 || points.some((value) => !Number.isFinite(value))) {
+            saveStatus.textContent = 'Informe quatro valores numéricos separados por ponto e vírgula';
+            return;
+          }
+          sparklineSeries[input.dataset.seriesInput] = points;
+          updateCharts();
+          window.clearTimeout(saveTimer);
+          saveTimer = window.setTimeout(saveData, 300);
+        });
+        input.addEventListener('change', () => {
+          const points = input.value.split(';').map((value) => Number(value.trim().replace(',', '.')));
+          if (points.length !== 4 || points.some((value) => !Number.isFinite(value))) {
+            input.value = sparklineSeries[input.dataset.seriesInput].join('; ');
+          }
+        });
+      });
+
+      document.getElementById('editToggle').addEventListener('click', (event) => {
+        isEditing = !isEditing;
+        editableLeaves.forEach((element) => {
+          if (element.closest('[data-calculated]')) return;
+          element.contentEditable = String(isEditing);
+          element.spellcheck = false;
+        });
+        event.currentTarget.setAttribute('aria-pressed', String(isEditing));
+        event.currentTarget.textContent = isEditing ? 'Concluir edição' : 'Editar dados';
+        saveStatus.textContent = isEditing ? 'Clique em qualquer texto ou valor para editar' : '';
+      });
+
+      document.getElementById('saveData').addEventListener('click', saveData);
+      document.getElementById('resetData').addEventListener('click', () => {
+        if (!window.confirm('Restaurar todos os dados originais?')) return;
+        editableLeaves.forEach((element, index) => {
+          element.textContent = originalValues[index];
+        });
+        Object.keys(sparklineSeries).forEach((id) => {
+          sparklineSeries[id] = [...defaultSparklineSeries[id]];
+        });
+        syncSeriesInputs();
+        localStorage.removeItem(storageKey);
+        updateCharts();
+        saveStatus.textContent = 'Dados originais restaurados';
+      });
+
+      let saveTimer;
+      dashboard.addEventListener('input', (event) => {
+        if (event.target.matches('[data-series-input]')) return;
+        updateCharts();
+        window.clearTimeout(saveTimer);
+        saveTimer = window.setTimeout(saveData, 300);
+      });
+
+      function parsePtBrNumber(text) {
+        const value = text.trim().replace(/[^\d,.-]/g, '');
+        const normalized = value.includes(',')
+          ? value.replace(/\./g, '').replace(',', '.')
+          : value.replace(/\.(?=\d{3}(?:\D|$))/g, '');
+        const number = Number.parseFloat(normalized);
+        return Number.isFinite(number) ? number : 0;
+      }
+
+      function recalculateIndicators() {
+        const callCount = parsePtBrNumber(document.getElementById('sampleCalls').textContent);
+        const analyzedCount = parsePtBrNumber(document.getElementById('sampleAnalyzed').textContent);
+        const coverage = callCount > 0 ? (analyzedCount / callCount) * 100 : 0;
+        const formattedCoverage = `${new Intl.NumberFormat('pt-BR', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(coverage)}%`;
+        document.getElementById('coverageHeader').textContent = formattedCoverage;
+        document.getElementById('coverageSample').textContent = formattedCoverage;
+
+        const rows = document.querySelectorAll('#indicatorRows tr[data-direction]');
+        rows.forEach((row) => {
+          const meta = parsePtBrNumber(row.cells[1].textContent);
+          const supervisor = parsePtBrNumber(row.cells[5].textContent);
+          const gap = supervisor - meta;
+          const direction = row.dataset.direction;
+          const meetsTarget = direction === 'lower' ? gap <= 0 : gap >= 0;
+          const threshold = Math.abs(meta) * Number(row.dataset.criticalLimit || 0.2);
+          const status = meetsTarget ? 'dentro' : Math.abs(gap) > threshold ? 'critico' : 'atencao';
+          const label = status === 'dentro' ? 'DENTRO' : status === 'critico' ? 'CRÍTICO' : 'ATENÇÃO';
+          const formattedGap = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 }).format(gap);
+          const gapFragment = row.cells[7].firstElementChild;
+          if (gapFragment) gapFragment.textContent = `${formattedGap}${row.dataset.unit || ''}`;
+          else row.cells[7].textContent = `${formattedGap}${row.dataset.unit || ''}`;
+
+          row.cells[7].classList.remove('text-red-600', 'bg-red-50', 'text-amber-700', 'bg-amber-50', 'text-green-700', 'bg-green-50');
+          row.cells[7].classList.add(
+            status === 'critico' ? 'text-red-600' : status === 'atencao' ? 'text-amber-700' : 'text-green-700',
+            status === 'critico' ? 'bg-red-50' : status === 'atencao' ? 'bg-amber-50' : 'bg-green-50'
+          );
+
+          const badge = row.cells[8].querySelector('span');
+          badge.classList.remove('badge-critico', 'badge-atencao', 'badge-dentro');
+          badge.classList.add(`badge-${status}`);
+          badge.textContent = label;
+        });
+      }
+
+      let offenderChart = null;
+      const chartCanvas = document.getElementById('chartOfensores');
+      const chartError = document.getElementById('chartError');
+      const percentageLabelsPlugin = {
+        id: 'percentageLabels',
+        afterDatasetsDraw(chart) {
+          const values = chart.data.datasets[0]?.data || [];
+          const total = values.reduce((sum, value) => sum + Number(value || 0), 0);
+          if (!total) return;
+
+          const { ctx } = chart;
+          ctx.save();
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 10px Inter, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          chart.getDatasetMeta(0).data.forEach((arc, index) => {
+            const value = Number(values[index] || 0);
+            if (value <= 0) return;
+            const position = arc.tooltipPosition();
+            ctx.fillText(`${((value / total) * 100).toFixed(1)}%`, position.x, position.y);
+          });
+          ctx.restore();
+        }
+      };
+      if (window.Chart && chartCanvas) {
+        offenderChart = new Chart(chartCanvas, {
+          type: 'doughnut',
+          data: {
+            labels: [],
+            datasets: [{
+              data: [],
+              backgroundColor: ['#0f766e', '#e11d48', '#65a30d', '#2563eb', '#d97706', '#0891b2'],
+              borderWidth: 2,
+              borderColor: '#ffffff'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '58%',
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: { boxWidth: 10, padding: 5, font: { size: 9 } }
+              },
+              tooltip: {
+                callbacks: {
+                  label(context) {
+                    const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
+                    const value = context.raw;
+                    const percentage = total ? ((value / total) * 100).toFixed(1) : '0.0';
+                    return `${context.label}: ${value} (${percentage}%)`;
+                  }
+                }
+              }
+            }
+          },
+          plugins: [percentageLabelsPlugin]
+        });
+      } else if (chartError) {
+        chartError.classList.remove('hidden');
+      }
+
+      function drawSparkline(canvasId, points, color = '#2563eb') {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width;
+        const h = canvas.height;
+        const padding = 8;
+        if (!points.length) return;
+
+        ctx.clearRect(0, 0, w, h);
+
+        const min = Math.min(...points);
+        const max = Math.max(...points);
+        const range = (max - min) === 0 ? 1 : (max - min);
+
+        const getX = (index) => padding + (points.length === 1 ? 0 : index / (points.length - 1)) * (w - 2 * padding);
+        const getY = (value) => h - padding - ((value - min) / range) * (h - 2 * padding);
+
+        // Desenhar linha do Sparkline
+        ctx.beginPath();
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.8;
+
+        points.forEach((pt, i) => {
+          const x = getX(i);
+          const y = getY(pt);
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+
+        // Desenhar os nós/pontos com rótulos de valores
+        points.forEach((pt, i) => {
+          const x = getX(i);
+          const y = getY(pt);
+
+          // Círculo
+          ctx.beginPath();
+          ctx.arc(x, y, 3, 0, Math.PI * 2);
+          ctx.fillStyle = '#0b2545';
+          ctx.fill();
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          // Rótulo textual
+          ctx.font = '8px Inter, sans-serif';
+          ctx.fillStyle = '#334155';
+          ctx.textAlign = 'center';
+          const textY = i % 2 === 0 ? y - 4 : y + 9;
+          ctx.fillText(pt, x, textY);
+        });
+      }
+
+      function updateCharts() {
+        recalculateIndicators();
+        const offenderRows = document.querySelectorAll('#offenderRows tr');
+        if (offenderChart) {
+          offenderChart.data.labels = Array.from(offenderRows, (row) => row.cells[0].textContent.trim());
+          offenderChart.data.datasets[0].data = Array.from(offenderRows, (row) =>
+            Math.max(0, parsePtBrNumber(row.cells[1].textContent))
+          );
+          offenderChart.update();
+        }
+
+        Object.keys(sparklineSeries).forEach((canvasId) => {
+          drawSparkline(canvasId, sparklineSeries[canvasId], '#2563eb');
+        });
+      }
+
+      updateCharts();
+    });
+
+    document.getElementById('downloadJpg').addEventListener('click', async () => {
+      const button = document.getElementById('downloadJpg');
+      const saveStatus = document.getElementById('saveStatus');
+      if (!window.html2canvas) {
+        saveStatus.textContent = 'Não foi possível carregar o exportador JPG';
+        return;
+      }
+
+      button.disabled = true;
+      saveStatus.textContent = 'Gerando imagem...';
+      try {
+        const dashboard = document.getElementById('dashboard');
+        const canvas = await window.html2canvas(dashboard, {
+          backgroundColor: '#f1f5f9',
+          scale: 2,
+          useCORS: true
+        });
+        const date = new Date();
+        const dateStamp = [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
+        const link = document.createElement('a');
+        link.download = `radar-oportunidades-${dateStamp}.jpg`;
+        link.href = canvas.toDataURL('image/jpeg', 0.95);
+        link.click();
+        saveStatus.textContent = 'Imagem JPG baixada';
+      } catch (error) {
+        saveStatus.textContent = 'Falha ao gerar o JPG';
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

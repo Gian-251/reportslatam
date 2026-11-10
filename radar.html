@@ -9,7 +9,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
   <!-- Chart.js via CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
   
   <style>
@@ -104,26 +104,6 @@
       outline-offset: 1px;
       background-color: #eff6ff;
     }
-    #dashboard .text-xs { font-size: 0.875rem; line-height: 1.25rem; }
-    #dashboard [class~="text-[10px]"] { font-size: 0.75rem !important; line-height: 1rem; }
-    #dashboard [class~="text-[11px]"] { font-size: 0.8125rem !important; line-height: 1.125rem; }
-    #chartOfensores.chart-3d {
-      filter: drop-shadow(0 8px 0 rgb(15 23 42 / 0.22));
-      transform: perspective(700px) rotateX(28deg) scaleY(0.9);
-      transform-origin: center center;
-      transition: filter 0.2s ease, transform 0.2s ease;
-    }
-    .chart-container {
-      height: 220px;
-      min-width: 0;
-      position: relative;
-      width: 100%;
-    }
-    .chart-container canvas {
-      display: block;
-      height: 100%;
-      width: 100%;
-    }
   </style>
 </head>
 <body class="p-2 sm:p-4 md:p-6 max-w-[1600px] mx-auto">
@@ -134,10 +114,15 @@
         <span class="brand-mark"><img class="latam-logo" src="https://upload.wikimedia.org/wikipedia/commons/f/fe/Latam-logo_-v_%28Indigo%29.svg" alt="LATAM" width="76" height="24"></span>
         <span class="small fw-semibold">Qualidade</span>
       </a>
-      <div class="navbar-nav ms-lg-auto py-2 py-lg-0 w-full lg:w-auto">
-        <a class="nav-link" href="index.html"><i class="bi bi-file-earmark-text" aria-hidden="true"></i>Gerador de Reports</a>
-        <a class="nav-link" href="qualidade.html"><i class="bi bi-bar-chart-line" aria-hidden="true"></i>Painel de Qualidade</a>
-        <a class="nav-link active" aria-current="page" href="radar.html"><i class="bi bi-radar" aria-hidden="true"></i>Radar de Oportunidades</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#radarNavigation" aria-controls="radarNavigation" aria-expanded="false" aria-label="Abrir menu">
+        <i class="bi bi-list fs-4" aria-hidden="true"></i><span>Menu</span>
+      </button>
+      <div class="collapse navbar-collapse" id="radarNavigation">
+        <div class="navbar-nav ms-lg-auto py-2 py-lg-0">
+          <a class="nav-link" href="index.html"><i class="bi bi-file-earmark-text" aria-hidden="true"></i>Gerador de Reports</a>
+          <a class="nav-link" href="qualidade.html"><i class="bi bi-bar-chart-line" aria-hidden="true"></i>Painel de Qualidade</a>
+          <a class="nav-link active" aria-current="page" href="radar.html"><i class="bi bi-radar" aria-hidden="true"></i>Radar de Oportunidades</a>
+        </div>
       </div>
     </div>
   </nav>
@@ -187,7 +172,7 @@
                 <th class="p-2">Mês</th>
                 <th class="p-2">Supervisor</th>
                 <th class="p-2 min-w-[110px]">Tendência<br><span class="text-[10px] font-normal text-slate-500">4 últimas semanas</span></th>
-                <th class="p-2">Gap<br><span class="text-[10px] font-normal text-slate-500">Atual - anterior</span></th>
+                <th class="p-2">Gap</th>
                 <th class="p-2">Status</th>
               </tr>
             </thead>
@@ -248,29 +233,21 @@
           </table>
         </div>
       </div>
-      <details open data-editor-ignore class="my-2">
+      <details open data-editor-ignore class="mx-3 my-2 rounded border border-slate-200 bg-slate-50 p-2">
         <summary class="cursor-pointer text-xs font-semibold text-slate-700">Dados das tendências (4 últimas semanas)</summary>
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2 mt-2">
-          <div class="mx-3 my-2 rounded border border-slate-200 bg-slate-50 p-2">
-            <label class="text-[11px] font-medium text-slate-600">NPS
-              <input data-series-input="sparkNps" type="text" inputmode="decimal" value="20; 29; 52; 41" aria-label="Valores da tendência NPS" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-            </label>
-          </div>
-          <div class="mx-3 my-2 rounded border border-slate-200 bg-slate-50 p-2">
-            <label class="text-[11px] font-medium text-slate-600">TMO
-              <input data-series-input="sparkTmo" type="text" inputmode="decimal" value="856; 816; 770; 844" aria-label="Valores da tendência TMO" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-            </label>
-          </div>
-          <div class="mx-3 my-2 rounded border border-slate-200 bg-slate-50 p-2">
-            <label class="text-[11px] font-medium text-slate-600">FCR
-              <input data-series-input="sparkFcr" type="text" inputmode="decimal" value="70; 69; 72; 70" aria-label="Valores da tendência FCR" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-            </label>
-          </div>
-          <div class="mx-3 my-2 rounded border border-slate-200 bg-slate-50 p-2">
-            <label class="text-[11px] font-medium text-slate-600">QA
-              <input data-series-input="sparkQa" type="text" inputmode="decimal" value="75; 75; 76; 72" aria-label="Valores da tendência QA" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
-            </label>
-          </div>
+          <label class="text-[11px] font-medium text-slate-600">NPS
+            <input data-series-input="sparkNps" type="text" inputmode="decimal" value="20; 29; 52; 41" aria-label="Valores da tendência NPS" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+          </label>
+          <label class="text-[11px] font-medium text-slate-600">TMO
+            <input data-series-input="sparkTmo" type="text" inputmode="decimal" value="856; 816; 770; 844" aria-label="Valores da tendência TMO" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+          </label>
+          <label class="text-[11px] font-medium text-slate-600">FCR
+            <input data-series-input="sparkFcr" type="text" inputmode="decimal" value="70; 69; 72; 70" aria-label="Valores da tendência FCR" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+          </label>
+          <label class="text-[11px] font-medium text-slate-600">QA
+            <input data-series-input="sparkQa" type="text" inputmode="decimal" value="75; 75; 76; 72" aria-label="Valores da tendência QA" class="mt-1 w-full rounded border border-slate-300 bg-white px-2 py-1.5 text-xs text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
+          </label>
         </div>
         <p class="mt-1 text-[10px] text-slate-500">Separe os quatro valores por ponto e vírgula. Os gráficos são independentes das células da tabela.</p>
       </details>
@@ -283,91 +260,46 @@
     </div>
 
     <!-- BLOCO 2: IMPACTO DOS OFENSORES (COL 5) -->
-    <div class="lg:col-span-5 flex flex-col gap-4">
-      <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden flex flex-col">
-        <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
-          2. Impacto dos Ofensores
-        </div>
-        <form id="addOffenderForm" data-editor-ignore class="flex flex-wrap items-end gap-2 p-3 border-b border-slate-200">
-          <label class="flex-1 min-w-[150px] text-xs font-medium text-slate-700">Ofensor
-            <input id="newOffenderName" type="text" required maxlength="60" class="mt-1 w-full rounded border border-slate-300 px-2 py-1.5 text-sm" placeholder="Nome do ofensor">
-          </label>
-          <label class="w-24 text-xs font-medium text-slate-700">Quantidade
-            <input id="newOffenderCount" type="number" required min="0" step="1" class="mt-1 w-full rounded border border-slate-300 px-2 py-1.5 text-sm" placeholder="0">
-          </label>
-          <button type="submit" class="bg-blue-900 text-white px-3 py-1.5 rounded text-sm font-semibold hover:bg-blue-800" aria-label="Adicionar ofensor" title="Adicionar ofensor">
-            <i class="bi bi-plus-lg" aria-hidden="true"></i>
-          </button>
-        </form>
-        <div class="p-3 flex-1 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
-          <!-- TABELA DE OFENSORES -->
-          <div class="sm:col-span-5 overflow-x-auto">
-            <table class="w-full text-xs text-center border-collapse table-border">
-              <thead>
-                <tr class="bg-slate-100 text-slate-700 font-semibold">
-                  <th class="p-1.5 text-left pl-2">Ofensor</th>
-                  <th class="p-1.5">Qtd</th>
-                  <th class="p-1.5"><span class="visually-hidden">Ações</span></th>
-                </tr>
-              </thead>
-              <tbody id="offenderRows" class="divide-y divide-slate-200 font-medium text-[11px]">
-                <tr>
-                  <td class="p-1.5 text-left pl-2 bg-slate-50">CAMBIO_VOLUNTARIO</td>
-                  <td class="p-1.5">229</td>
-                  <td class="p-1.5"><button type="button" class="text-red-700 hover:text-red-900" data-remove-offender aria-label="Excluir CAMBIO_VOLUNTARIO" title="Excluir ofensor"><i class="bi bi-trash" aria-hidden="true"></i></button></td>
-                </tr>
-                <tr>
-                  <td class="p-1.5 text-left pl-2 bg-slate-50">EXCEPCIONES</td>
-                  <td class="p-1.5">131</td>
-                  <td class="p-1.5"><button type="button" class="text-red-700 hover:text-red-900" data-remove-offender aria-label="Excluir EXCEPCIONES" title="Excluir ofensor"><i class="bi bi-trash" aria-hidden="true"></i></button></td>
-                </tr>
-                <tr>
-                  <td class="p-1.5 text-left pl-2 bg-slate-50">CAMBIO_INVOLUNTARIO</td>
-                  <td class="p-1.5">131</td>
-                  <td class="p-1.5"><button type="button" class="text-red-700 hover:text-red-900" data-remove-offender aria-label="Excluir CAMBIO_INVOLUNTARIO" title="Excluir ofensor"><i class="bi bi-trash" aria-hidden="true"></i></button></td>
-                </tr>
-                <tr>
-                  <td class="p-1.5 text-left pl-2 bg-slate-50">CHECK-IN</td>
-                  <td class="p-1.5">100</td>
-                  <td class="p-1.5"><button type="button" class="text-red-700 hover:text-red-900" data-remove-offender aria-label="Excluir CHECK-IN" title="Excluir ofensor"><i class="bi bi-trash" aria-hidden="true"></i></button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <!-- GRÁFICO DONUT -->
-          <div class="sm:col-span-7 flex flex-col items-center justify-center relative min-h-[190px]">
-            <h3 class="text-xs font-bold text-slate-600 mb-1">Pesquisas negativas</h3>
-            <div class="flex gap-1 mb-2" role="group" aria-label="Modo de exibição do gráfico" data-html2canvas-ignore>
-              <button type="button" data-chart-mode="2d" aria-pressed="true" class="rounded border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100">2D</button>
-              <button type="button" data-chart-mode="3d" aria-pressed="false" class="rounded border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-100">3D</button>
-            </div>
-            <div class="chart-container">
-              <canvas id="chartOfensores" width="360" height="220" aria-label="Gráfico de pesquisas negativas por ofensor" role="img"></canvas>
-              <p id="chartError" hidden class="absolute inset-0 grid place-items-center text-center text-xs text-red-600">Não foi possível carregar o gráfico. Verifique a conexão e recarregue a página.</p>
-            </div>
-          </div>
-        </div>
+    <div class="lg:col-span-5 bg-white rounded-lg shadow border border-slate-200 overflow-hidden flex flex-col">
+      <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
+        2. Impacto dos Ofensores
       </div>
-
-      <!-- BLOCO 3: CONFIABILIDADE DA AMOSTRA -->
-      <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden">
-        <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
-          3. Confiabilidade da Amostra
+      <div class="p-3 flex-1 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+        <!-- TABELA DE OFENSORES -->
+        <div class="sm:col-span-5 overflow-x-auto">
+          <table class="w-full text-xs text-center border-collapse table-border">
+            <thead>
+              <tr class="bg-slate-100 text-slate-700 font-semibold">
+                <th class="p-1.5 text-left pl-2">Ofensor</th>
+                <th class="p-1.5">Qtd</th>
+              </tr>
+            </thead>
+            <tbody id="offenderRows" class="divide-y divide-slate-200 font-medium text-[11px]">
+              <tr>
+                <td class="p-1.5 text-left pl-2 bg-slate-50">CAMBIO_VOLUNTARIO</td>
+                <td class="p-1.5">229</td>
+              </tr>
+              <tr>
+                <td class="p-1.5 text-left pl-2 bg-slate-50">EXCEPCIONES</td>
+                <td class="p-1.5">131</td>
+              </tr>
+              <tr>
+                <td class="p-1.5 text-left pl-2 bg-slate-50">CAMBIO_INVOLUNTARIO</td>
+                <td class="p-1.5">131</td>
+              </tr>
+              <tr>
+                <td class="p-1.5 text-left pl-2 bg-slate-50">CHECK-IN</td>
+                <td class="p-1.5">100</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
-        <div class="p-3">
-          <div class="grid grid-cols-3 gap-2 text-center">
-            <div class="bg-slate-50 border border-slate-200 rounded p-2">
-              <div class="text-[10px] uppercase font-bold text-slate-500">Chamadas</div>
-              <div id="sampleCalls" class="text-sm sm:text-base font-extrabold text-slate-800">1.029</div>
-            </div>
-            <div class="bg-slate-50 border border-slate-200 rounded p-2">
-              <div class="text-[10px] uppercase font-bold text-slate-500">Analisadas</div>
-              <div id="sampleAnalyzed" class="text-sm sm:text-base font-extrabold text-blue-700">124</div>
-            </div>
-            <div class="bg-slate-50 border border-slate-200 rounded p-2">
-              <div class="text-[10px] uppercase font-bold text-slate-500">Cobertura (analisadas / chamadas)</div>
-              <div id="coverageSample" data-calculated class="text-sm sm:text-base font-extrabold text-emerald-600">12,05%</div>
-            </div>
+        <!-- GRÁFICO DONUT -->
+        <div class="sm:col-span-7 flex flex-col items-center justify-center relative min-h-[190px]">
+          <h3 class="text-xs font-bold text-slate-600 mb-1">Pesquisas negativas</h3>
+          <div class="w-full h-[170px] relative">
+            <canvas id="chartOfensores"></canvas>
+            <p id="chartError" class="hidden absolute inset-0 grid place-items-center text-center text-xs text-red-600">Não foi possível carregar o gráfico. Verifique a conexão e recarregue a página.</p>
           </div>
         </div>
       </div>
@@ -484,10 +416,10 @@
 
   </div>
 
-  <!-- SEÇÃO INFERIOR (BLOCOS 6 E 7) -->
+  <!-- SEÇÃO INFERIOR (BLOCOS 6, 3 E 7) -->
   <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 mt-4">
     
-    <!-- ESQUERDA: BLOCO 6 (COL 7) -->
+    <!-- ESQUERDA: BLOCO 6 + BLOCO 3 (COL 7) -->
     <div class="lg:col-span-7 flex flex-col gap-4">
       
       <!-- BLOCO 6: INSIGHTS DA QUALIDADE -->
@@ -497,6 +429,29 @@
         </div>
         <div class="p-3 text-xs leading-relaxed text-slate-700 text-justify bg-slate-50/50">
           O diagnóstico geral da operação aponta o supervisor <strong>4888879</strong> como o principal gargalo de desempenho do contrato, apresentando a menor média global de qualidade (56,5%) e de FCR (53,9%), impulsionado por um grupo de 4 agentes críticos com aproveitamento inferior a 50% (Matheus com 25%, Lorena com 27%, Márcia com 42% e Adriele com 46%). Soma-se a isso um cenário de forte descontrole nos tempos operacionais da equipe, que acumula desde perdas extremas por inatividade e pausas fora do padrão (-44.360s e -34.871s) até estouros críticos no tempo de atendimento (+492.344s com o agente Caio), evidenciando falhas diretas no acompanhamento de aderência e na gestão da linha em tempo real.
+        </div>
+      </div>
+
+      <!-- BLOCO 3: CONFIABILIDADE DA AMOSTRA -->
+      <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden">
+        <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
+          3. Confiabilidade da Amostra
+        </div>
+        <div class="p-3">
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="bg-slate-50 border border-slate-200 rounded p-2">
+              <div class="text-[10px] uppercase font-bold text-slate-500">Chamadas</div>
+              <div id="sampleCalls" class="text-sm sm:text-base font-extrabold text-slate-800">1.029</div>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 rounded p-2">
+              <div class="text-[10px] uppercase font-bold text-slate-500">Analisadas</div>
+              <div id="sampleAnalyzed" class="text-sm sm:text-base font-extrabold text-blue-700">124</div>
+            </div>
+            <div class="bg-slate-50 border border-slate-200 rounded p-2">
+              <div class="text-[10px] uppercase font-bold text-slate-500">Cobertura (analisadas / chamadas)</div>
+              <div id="coverageSample" data-calculated class="text-sm sm:text-base font-extrabold text-emerald-600">12,05%</div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -528,17 +483,10 @@
         sparkFcr: [70, 69, 72, 70],
         sparkQa: [75, 75, 76, 72]
       };
-      const defaultOffenders = [
-        { name: 'CAMBIO_VOLUNTARIO', count: '229' },
-        { name: 'EXCEPCIONES', count: '131' },
-        { name: 'CAMBIO_INVOLUNTARIO', count: '131' },
-        { name: 'CHECK-IN', count: '100' }
-      ];
       const sparklineSeries = Object.fromEntries(
         Object.entries(defaultSparklineSeries).map(([id, points]) => [id, [...points]])
       );
       let isEditing = false;
-      let chartMode = '2d';
       const textWalker = document.createTreeWalker(dashboard, NodeFilter.SHOW_TEXT);
       const textNodes = [];
       while (textWalker.nextNode()) textNodes.push(textWalker.currentNode);
@@ -554,49 +502,6 @@
         .filter((element) => element.children.length === 0 && element.textContent.trim() && !element.closest('[data-editor-ignore]'));
       const originalValues = editableLeaves.map((element) => element.textContent);
 
-      function getOffenders() {
-        return Array.from(dashboard.querySelectorAll('#offenderRows tr'), (row) => ({
-          name: row.cells[0].textContent.trim(),
-          count: row.cells[1].textContent.trim()
-        }));
-      }
-
-      function renderOffenders(offenders) {
-        const rows = dashboard.querySelector('#offenderRows');
-        rows.replaceChildren();
-        offenders.forEach((offender) => {
-          const row = document.createElement('tr');
-          const nameCell = document.createElement('td');
-          nameCell.className = 'p-1.5 text-left pl-2 bg-slate-50';
-          nameCell.textContent = String(offender.name ?? '');
-          nameCell.contentEditable = String(isEditing);
-          nameCell.spellcheck = false;
-
-          const countCell = document.createElement('td');
-          countCell.className = 'p-1.5';
-          countCell.textContent = String(offender.count ?? '0');
-          countCell.contentEditable = String(isEditing);
-          countCell.spellcheck = false;
-
-          const actionCell = document.createElement('td');
-          actionCell.className = 'p-1.5';
-          const removeButton = document.createElement('button');
-          removeButton.type = 'button';
-          removeButton.dataset.removeOffender = '';
-          removeButton.className = 'text-red-700 hover:text-red-900';
-          removeButton.setAttribute('aria-label', `Excluir ${nameCell.textContent || 'ofensor'}`);
-          removeButton.title = 'Excluir ofensor';
-          const icon = document.createElement('i');
-          icon.className = 'bi bi-trash';
-          icon.setAttribute('aria-hidden', 'true');
-          removeButton.append(icon);
-          actionCell.append(removeButton);
-
-          row.append(nameCell, countCell, actionCell);
-          rows.append(row);
-        });
-      }
-
       editableLeaves.forEach((element, index) => {
         element.dataset.editKey = String(index);
       });
@@ -604,7 +509,7 @@
       function saveData() {
         try {
           const values = editableLeaves.map((element) => element.textContent);
-          localStorage.setItem(storageKey, JSON.stringify({ values, sparklineSeries, offenders: getOffenders(), chartMode }));
+          localStorage.setItem(storageKey, JSON.stringify({ values, sparklineSeries }));
           saveStatus.textContent = 'Alterações salvas neste navegador';
         } catch (error) {
           saveStatus.textContent = 'Não foi possível salvar neste navegador';
@@ -617,8 +522,6 @@
           editableLeaves.forEach((element, index) => {
             if (typeof savedData.values[index] === 'string') element.textContent = savedData.values[index];
           });
-          if (Array.isArray(savedData.offenders)) renderOffenders(savedData.offenders);
-          if (savedData.chartMode === '2d' || savedData.chartMode === '3d') chartMode = savedData.chartMode;
           Object.keys(sparklineSeries).forEach((id) => {
             const points = savedData.sparklineSeries?.[id];
             if (Array.isArray(points) && points.length >= 2 && points.every(Number.isFinite)) {
@@ -666,10 +569,6 @@
           element.contentEditable = String(isEditing);
           element.spellcheck = false;
         });
-        dashboard.querySelectorAll('#offenderRows td:nth-child(-n+2)').forEach((cell) => {
-          cell.contentEditable = String(isEditing);
-          cell.spellcheck = false;
-        });
         event.currentTarget.setAttribute('aria-pressed', String(isEditing));
         event.currentTarget.textContent = isEditing ? 'Concluir edição' : 'Editar dados';
         saveStatus.textContent = isEditing ? 'Clique em qualquer texto ou valor para editar' : '';
@@ -681,9 +580,6 @@
         editableLeaves.forEach((element, index) => {
           element.textContent = originalValues[index];
         });
-        renderOffenders(defaultOffenders);
-        chartMode = '2d';
-        applyChartMode();
         Object.keys(sparklineSeries).forEach((id) => {
           sparklineSeries[id] = [...defaultSparklineSeries[id]];
         });
@@ -699,29 +595,6 @@
         updateCharts();
         window.clearTimeout(saveTimer);
         saveTimer = window.setTimeout(saveData, 300);
-      });
-
-      document.getElementById('addOffenderForm').addEventListener('submit', (event) => {
-        event.preventDefault();
-        const nameInput = document.getElementById('newOffenderName');
-        const countInput = document.getElementById('newOffenderCount');
-        const name = nameInput.value.trim();
-        if (!name || !countInput.validity.valid) return;
-        const offenders = getOffenders();
-        offenders.push({ name, count: countInput.value });
-        renderOffenders(offenders);
-        nameInput.value = '';
-        countInput.value = '';
-        updateCharts();
-        saveData();
-      });
-
-      dashboard.querySelector('#offenderRows').addEventListener('click', (event) => {
-        const removeButton = event.target.closest('[data-remove-offender]');
-        if (!removeButton) return;
-        removeButton.closest('tr').remove();
-        updateCharts();
-        saveData();
       });
 
       function parsePtBrNumber(text) {
@@ -748,25 +621,21 @@
         rows.forEach((row) => {
           const meta = parsePtBrNumber(row.cells[1].textContent);
           const supervisor = parsePtBrNumber(row.cells[5].textContent);
-          const previousWeek = parsePtBrNumber(row.cells[2].textContent);
-          const currentWeek = parsePtBrNumber(row.cells[3].textContent);
-          const weeklyGap = currentWeek - previousWeek;
-          const targetGap = supervisor - meta;
+          const gap = supervisor - meta;
           const direction = row.dataset.direction;
-          const meetsTarget = direction === 'lower' ? targetGap <= 0 : targetGap >= 0;
+          const meetsTarget = direction === 'lower' ? gap <= 0 : gap >= 0;
           const threshold = Math.abs(meta) * Number(row.dataset.criticalLimit || 0.2);
-          const status = meetsTarget ? 'dentro' : Math.abs(targetGap) > threshold ? 'critico' : 'atencao';
+          const status = meetsTarget ? 'dentro' : Math.abs(gap) > threshold ? 'critico' : 'atencao';
           const label = status === 'dentro' ? 'DENTRO' : status === 'critico' ? 'CRÍTICO' : 'ATENÇÃO';
-          const formattedGap = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 }).format(weeklyGap);
+          const formattedGap = new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 }).format(gap);
           const gapFragment = row.cells[7].firstElementChild;
           if (gapFragment) gapFragment.textContent = `${formattedGap}${row.dataset.unit || ''}`;
           else row.cells[7].textContent = `${formattedGap}${row.dataset.unit || ''}`;
 
-          row.cells[7].classList.remove('text-red-600', 'bg-red-50', 'text-green-700', 'bg-green-50', 'text-slate-600', 'bg-slate-100');
-          const improved = direction === 'lower' ? weeklyGap < 0 : weeklyGap > 0;
+          row.cells[7].classList.remove('text-red-600', 'bg-red-50', 'text-amber-700', 'bg-amber-50', 'text-green-700', 'bg-green-50');
           row.cells[7].classList.add(
-            weeklyGap === 0 ? 'text-slate-600' : improved ? 'text-green-700' : 'text-red-600',
-            weeklyGap === 0 ? 'bg-slate-100' : improved ? 'bg-green-50' : 'bg-red-50'
+            status === 'critico' ? 'text-red-600' : status === 'atencao' ? 'text-amber-700' : 'text-green-700',
+            status === 'critico' ? 'bg-red-50' : status === 'atencao' ? 'bg-amber-50' : 'bg-green-50'
           );
 
           const badge = row.cells[8].querySelector('span');
@@ -779,30 +648,6 @@
       let offenderChart = null;
       const chartCanvas = document.getElementById('chartOfensores');
       const chartError = document.getElementById('chartError');
-      function showChartError(message) {
-        if (!chartError) return;
-        chartError.textContent = message;
-        chartError.hidden = false;
-      }
-
-      function applyChartMode() {
-        chartCanvas.classList.toggle('chart-3d', chartMode === '3d');
-        dashboard.querySelectorAll('[data-chart-mode]').forEach((button) => {
-          const selected = button.dataset.chartMode === chartMode;
-          button.setAttribute('aria-pressed', String(selected));
-          button.classList.toggle('bg-blue-900', selected);
-          button.classList.toggle('text-white', selected);
-        });
-      }
-
-      dashboard.querySelectorAll('[data-chart-mode]').forEach((button) => {
-        button.addEventListener('click', () => {
-          chartMode = button.dataset.chartMode;
-          applyChartMode();
-          saveData();
-        });
-      });
-
       const percentageLabelsPlugin = {
         id: 'percentageLabels',
         afterDatasetsDraw(chart) {
@@ -826,8 +671,7 @@
         }
       };
       if (window.Chart && chartCanvas) {
-        try {
-          offenderChart = new Chart(chartCanvas, {
+        offenderChart = new Chart(chartCanvas, {
           type: 'doughnut',
           data: {
             labels: [],
@@ -859,16 +703,11 @@
               }
             }
           },
-            plugins: [percentageLabelsPlugin]
-          });
-        } catch (error) {
-          showChartError('Falha ao renderizar o gráfico. Recarregue a página.');
-          console.error('Falha ao inicializar o gráfico de ofensores:', error);
-        }
-      } else {
-        showChartError(window.Chart ? 'Canvas do gráfico indisponível.' : 'Biblioteca do gráfico indisponível. Verifique a conexão e recarregue a página.');
+          plugins: [percentageLabelsPlugin]
+        });
+      } else if (chartError) {
+        chartError.classList.remove('hidden');
       }
-      applyChartMode();
 
       function drawSparkline(canvasId, points, color = '#2563eb') {
         const canvas = document.getElementById(canvasId);

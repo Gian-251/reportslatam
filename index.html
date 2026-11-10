@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gerador de Reports | Qualidade LATAM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
             --navy: #123b68;
@@ -17,6 +18,47 @@
 
         * {
             box-sizing: border-box
+        }
+
+        .app-layout {
+            min-height: 100vh
+        }
+
+        .app-sidebar {
+            --bs-offcanvas-width: 250px;
+            flex: 0 0 250px;
+            background: #102f50;
+            color: white
+        }
+
+        .sidebar-brand {
+            display: block;
+            color: white;
+            font-weight: bold;
+            font-size: 17px;
+            text-decoration: none;
+            padding: 8px 12px 24px
+        }
+
+        .app-sidebar .nav-link {
+            color: #d7e4f0;
+            border-radius: 6px;
+            padding: 10px 12px
+        }
+
+        .app-sidebar .nav-link:hover,
+        .app-sidebar .nav-link.active {
+            color: white;
+            background: #ffffff20
+        }
+
+        .app-content {
+            min-width: 0;
+            flex: 1
+        }
+
+        .sidebar-toggle {
+            margin: 12px 16px 0
         }
 
         body {
@@ -320,6 +362,15 @@
         }
 
         @media print {
+            .app-sidebar,
+            .sidebar-toggle {
+                display: none !important
+            }
+
+            .app-layout {
+                display: block !important
+            }
+
             body {
                 background: white
             }
@@ -360,11 +411,27 @@
 </head>
 
 <body>
-    <header>
-        <h1>Gerador de Reports de Qualidade</h1>
-        <p>LATAM · Konecta · Reports de desvio a partir da base CASOS</p>
-    </header>
-    <main>
+    <div class="app-layout d-lg-flex">
+        <aside class="offcanvas-lg offcanvas-start app-sidebar" tabindex="-1" id="appSidebar" aria-label="Menu principal">
+            <div class="offcanvas-header">
+                <span class="fw-bold">Navegação</span>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#appSidebar" aria-label="Fechar menu"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column">
+                <a class="sidebar-brand" href="index.html">LATAM <span class="d-block fw-normal small">Qualidade</span></a>
+                <nav class="nav flex-column gap-1">
+                    <a class="nav-link active" aria-current="page" href="index.html">Gerador de Reports</a>
+                    <a class="nav-link" href="qualidade.html">Painel de Qualidade</a>
+                </nav>
+            </div>
+        </aside>
+        <div class="app-content">
+            <button class="btn btn-outline-primary d-lg-none sidebar-toggle" type="button" data-bs-toggle="offcanvas" data-bs-target="#appSidebar" aria-controls="appSidebar" aria-label="Abrir menu">☰ Menu</button>
+            <header>
+                <h1>Gerador de Reports de Qualidade</h1>
+                <p>LATAM · Konecta · Reports de desvio a partir da base CASOS</p>
+            </header>
+            <main>
         <section class="panel">
             <h2>1. Importar base CASOS</h2>
             <label>Arquivo Excel (.xlsx)</label><input id="file" type="file" accept=".xlsx,.xls">
@@ -447,7 +514,10 @@
             </div>
             <p class="status">A imagem JPG será nomeada com o nome da agente e a data de hoje.</p>
         </section>
-    </main>
+            </main>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <script>

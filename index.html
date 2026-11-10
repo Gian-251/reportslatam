@@ -544,6 +544,11 @@
             renderSummary($('summary').value || '—');
         }
         $('refresh').onclick = update; $('model').onchange = update;
+        function updateResponsible() {
+            $('rresponsible').textContent = $('responsible').value || '—';
+        }
+        $('responsible').addEventListener('input', updateResponsible);
+        $('responsible').addEventListener('change', updateResponsible);
         $('saveJpg').onclick = async () => {
             update();
             try {
@@ -561,7 +566,7 @@
             update(); let t = `${$('rtitle').textContent}\nAgente: ${$('agent').value} | RK: ${$('bp').value} | Célula: ${$('cell').value}\nSupervisor: ${$('sup').value}\nData: ${$('date').value} | Duração: ${$('duration').value} | Hora: ${$('hour').value}\nID: ${$('callid').value} | NPS: ${$('nps').value}\n\nResumo: ${$('summary').value}\n\nOportunidade: ${$('opportunity').value}\n\nAção: ${$('action').value} | Retorno: ${$('return').value}\nResponsável / supervisor: ${$('responsible').value}`;
             try { await navigator.clipboard.writeText(t); alert('Texto do report copiado.') } catch (e) { alert(t) }
         };
-        ['agent', 'bp', 'cell', 'sup', 'date', 'duration', 'hour', 'callid', 'nps', 'summary', 'opportunity', 'action', 'return', 'responsible'].forEach(id => $(id).addEventListener('input', update));
+        ['agent', 'bp', 'cell', 'sup', 'date', 'duration', 'hour', 'callid', 'nps', 'summary', 'opportunity', 'action', 'return'].forEach(id => $(id).addEventListener('input', update));
     </script>
 </body>
 

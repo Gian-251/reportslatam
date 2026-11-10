@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Painel de Qualidade | LATAM</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <style>
         :root {
             --latam-blue: #00205b;
@@ -20,45 +21,80 @@
             color: #222
         }
 
-        .app-layout {
-            min-height: 100vh
-        }
-
-        .app-sidebar {
-            --bs-offcanvas-width: 250px;
-            flex: 0 0 250px;
-            background: #102f50;
-            color: white
-        }
-
-        .app-sidebar .offcanvas-body {
-            padding: 1rem
-        }
-
-        .sidebar-brand {
-            display: block;
-            color: white;
-            font-size: 17px;
-            font-weight: 700;
-            padding: 8px 12px 24px;
-            text-decoration: none
-        }
-
-        .app-sidebar .nav-link {
-            border-radius: 6px;
-            color: #d7e4f0;
-            padding: 10px 12px
-        }
-
-        .app-sidebar .nav-link:hover,
-        .app-sidebar .nav-link.active {
-            background: #ffffff20;
-            color: white
-        }
-
         .app-content {
             flex: 1;
             min-width: 0
+        }
+
+        .app-navbar {
+            background: #0b2850;
+            border-bottom: 3px solid var(--latam-red);
+            box-shadow: 0 3px 12px #102b4520;
+            position: sticky;
+            top: 0;
+            z-index: 1020
+        }
+
+        .app-navbar .navbar-brand,
+        .app-navbar .nav-link {
+            color: white
+        }
+
+        .app-navbar .nav-link {
+            border-radius: 6px;
+            padding: 9px 13px;
+            transition: background-color .18s ease, color .18s ease
+        }
+
+        .app-navbar .nav-link:hover,
+        .app-navbar .nav-link.active {
+            background: #ffffff1a;
+            color: white
+        }
+
+        .app-navbar .nav-link i {
+            margin-right: 6px
+        }
+
+        .brand-mark {
+            background: white;
+            border-radius: 4px;
+            display: inline-flex;
+            padding: 3px 6px
+        }
+
+        .latam-logo {
+            height: 24px;
+            width: 76px
+        }
+
+        .app-navbar .navbar-toggler {
+            align-items: center;
+            border-color: #ffffff80;
+            color: white;
+            display: inline-flex;
+            gap: 7px
+        }
+
+        .app-navbar .navbar-toggler:focus {
+            box-shadow: 0 0 0 .2rem #ffffff55
+        }
+
+        .btn {
+            transition: transform .16s ease, filter .16s ease, box-shadow .16s ease
+        }
+
+        .btn:hover {
+            transform: translateY(-1px)
+        }
+
+        .btn:active {
+            transform: translateY(0)
+        }
+
+        :focus-visible {
+            outline: 3px solid #2788a580;
+            outline-offset: 2px
         }
 
         .topbar {
@@ -207,12 +243,6 @@
             opacity: 1
         }
 
-        @media (max-width: 991.98px) {
-            .app-sidebar {
-                flex: initial
-            }
-        }
-
         @media (max-width: 850px) {
             .chartbox {
                 height: 280px
@@ -230,23 +260,24 @@
 </head>
 
 <body>
-    <div class="app-layout d-lg-flex">
-        <aside class="offcanvas-lg offcanvas-start app-sidebar" tabindex="-1" id="appSidebar" aria-label="Menu principal">
-            <div class="offcanvas-header">
-                <span class="fw-bold">Navegação</span>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#appSidebar" aria-label="Fechar menu"></button>
+    <nav class="navbar navbar-expand-lg app-navbar" aria-label="Menu de aplicativo">
+        <div class="container-fluid px-3 px-lg-4">
+            <a class="navbar-brand d-flex align-items-center gap-2 me-3" href="index.html">
+                <span class="brand-mark"><img class="latam-logo" src="https://upload.wikimedia.org/wikipedia/commons/f/fd/Latam-logo_-v.svg" alt="LATAM" width="76" height="24"></span>
+                <span class="small fw-semibold">Qualidade</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#appNavigation" aria-controls="appNavigation" aria-expanded="false" aria-label="Abrir menu">
+                <i class="bi bi-list fs-4" aria-hidden="true"></i><span>Menu</span>
+            </button>
+            <div class="collapse navbar-collapse" id="appNavigation">
+                <div class="navbar-nav ms-lg-auto py-2 py-lg-0">
+                    <a class="nav-link" href="index.html"><i class="bi bi-file-earmark-text" aria-hidden="true"></i>Gerador de Reports</a>
+                    <a class="nav-link active" aria-current="page" href="qualidade.html"><i class="bi bi-bar-chart-line" aria-hidden="true"></i>Painel de Qualidade</a>
+                </div>
             </div>
-            <div class="offcanvas-body d-flex flex-column">
-                <a class="sidebar-brand" href="index.html">LATAM <span class="d-block fw-normal small">Qualidade</span></a>
-                <nav class="nav flex-column gap-1">
-                    <a class="nav-link" href="index.html">Gerador de Reports</a>
-                    <a class="nav-link active" aria-current="page" href="qualidade.html">Painel de Qualidade</a>
-                </nav>
-            </div>
-        </aside>
-
-        <div class="app-content">
-            <button class="btn btn-outline-primary d-lg-none m-3 mb-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#appSidebar" aria-controls="appSidebar">☰ Menu</button>
+        </div>
+    </nav>
+    <div class="app-content">
             <header class="topbar">
                 <div>
                     <h1>Painel de Qualidade LATAM</h1>
@@ -262,14 +293,14 @@
                 <section class="panel">
                     <h2>Agentes — NPS, FCR e TMO</h2>
                     <div class="toolbar">
-                        <button class="btn btn-latam" type="button" onclick="addAgent()">＋ Adicionar agente</button>
+                        <button class="btn btn-latam" type="button" onclick="addAgent()"><i class="bi bi-person-plus" aria-hidden="true"></i> Adicionar agente</button>
                         <label for="agentMetric">Indicador:</label>
                         <select class="form-select" id="agentMetric" onchange="updateAgentChart()">
                             <option value="nps">NPS</option>
                             <option value="fcr">FCR (%)</option>
                             <option value="tmo">TMO (segundos)</option>
                         </select>
-                        <button class="btn btn-outline-secondary" type="button" onclick="exportCSV('agents')">Exportar agentes CSV</button>
+                        <button class="btn btn-outline-secondary" type="button" onclick="exportCSV('agents')"><i class="bi bi-download" aria-hidden="true"></i> Exportar agentes CSV</button>
                     </div>
                     <div class="table-wrap"><table class="table table-bordered table-sm mb-0" id="agentTable"></table></div>
                     <p class="note">Edite os campos diretamente na tabela. As alterações são salvas automaticamente no navegador.</p>
@@ -279,24 +310,23 @@
                 <section class="panel">
                     <h2>Supervisores — NPS semanal e mensal</h2>
                     <div class="toolbar">
-                        <button class="btn btn-latam" type="button" onclick="addSupervisor()">＋ Adicionar supervisor</button>
+                        <button class="btn btn-latam" type="button" onclick="addSupervisor()"><i class="bi bi-person-plus" aria-hidden="true"></i> Adicionar supervisor</button>
                         <label for="superMetric">Indicador:</label>
                         <select class="form-select" id="superMetric" onchange="updateSupervisorChart()">
                             <option value="weeks">NPS semanal (1ª a 4ª semana)</option>
                             <option value="month">NPS mensal</option>
                         </select>
-                        <button class="btn btn-outline-secondary" type="button" onclick="exportCSV('supervisors')">Exportar supervisores CSV</button>
+                        <button class="btn btn-outline-secondary" type="button" onclick="exportCSV('supervisors')"><i class="bi bi-download" aria-hidden="true"></i> Exportar supervisores CSV</button>
                     </div>
                     <div class="table-wrap"><table class="table table-bordered table-sm mb-0" id="superTable"></table></div>
                     <div class="chartbox"><canvas id="superChartCanvas"></canvas></div>
                 </section>
 
                 <div class="toolbar">
-                    <button class="btn btn-outline-secondary" type="button" onclick="resetData()">Restaurar dados de exemplo</button>
-                    <button class="btn btn-outline-danger" type="button" onclick="clearData()">Limpar todos os dados</button>
+                    <button class="btn btn-outline-secondary" type="button" onclick="resetData()"><i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i> Restaurar dados de exemplo</button>
+                    <button class="btn btn-outline-danger" type="button" onclick="clearData()"><i class="bi bi-trash3" aria-hidden="true"></i> Limpar todos os dados</button>
                 </div>
             </main>
-        </div>
     </div>
 
     <div id="toast" role="status" aria-live="polite">Ação realizada com sucesso!</div>

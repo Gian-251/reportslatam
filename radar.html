@@ -181,7 +181,7 @@
                 <th class="p-2">Sem. Atual</th>
                 <th class="p-2">Mês</th>
                 <th class="p-2">Supervisor</th>
-                <th class="p-2 min-w-[110px]">Tendência<br><span class="text-[10px] font-normal text-slate-500">4 últimas semanas</span></th>
+                <th class="p-2 min-w-[130px]">Tendência<br><span class="text-xs font-normal text-slate-500">4 últimas semanas</span></th>
                 <th class="p-2">Gap</th>
                 <th class="p-2">Status</th>
               </tr>
@@ -195,7 +195,7 @@
                 <td class="p-2">33</td>
                 <td class="p-2 text-red-600 font-medium">-60</td>
                 <td class="p-1 align-middle">
-                  <canvas id="sparkNps" width="110" height="38" class="mx-auto" aria-label="Tendência NPS nas quatro últimas semanas"></canvas>
+                  <canvas id="sparkNps" width="130" height="48" class="mx-auto" aria-label="Tendência NPS nas quatro últimas semanas"></canvas>
                 </td>
                 <td class="p-2 font-bold text-red-600 bg-red-50">-120</td>
                 <td class="p-2"><span class="badge-critico">CRÍTICO</span></td>
@@ -208,7 +208,7 @@
                 <td class="p-2">861</td>
                 <td class="p-2">940</td>
                 <td class="p-1 align-middle">
-                  <canvas id="sparkTmo" width="110" height="38" class="mx-auto" aria-label="Tendência TMO nas quatro últimas semanas"></canvas>
+                  <canvas id="sparkTmo" width="130" height="48" class="mx-auto" aria-label="Tendência TMO nas quatro últimas semanas"></canvas>
                 </td>
                 <td class="p-2 font-bold bg-amber-50 text-amber-700">40,00</td>
                 <td class="p-2"><span class="badge-atencao">ATENÇÃO</span></td>
@@ -221,7 +221,7 @@
                 <td class="p-2">70%</td>
                 <td class="p-2">58%</td>
                 <td class="p-1 align-middle">
-                  <canvas id="sparkFcr" width="110" height="38" class="mx-auto" aria-label="Tendência FCR nas quatro últimas semanas"></canvas>
+                  <canvas id="sparkFcr" width="130" height="48" class="mx-auto" aria-label="Tendência FCR nas quatro últimas semanas"></canvas>
                 </td>
                 <td class="p-2 font-bold bg-amber-50 text-amber-700">7%</td>
                 <td class="p-2"><span class="badge-atencao">ATENÇÃO</span></td>
@@ -234,7 +234,7 @@
                 <td class="p-2">75%</td>
                 <td class="p-2">74%</td>
                 <td class="p-1 align-middle">
-                  <canvas id="sparkQa" width="110" height="38" class="mx-auto" aria-label="Tendência QA nas quatro últimas semanas"></canvas>
+                  <canvas id="sparkQa" width="130" height="48" class="mx-auto" aria-label="Tendência QA nas quatro últimas semanas"></canvas>
                 </td>
                 <td class="p-2 font-bold bg-amber-50 text-amber-700">16%</td>
                 <td class="p-2"><span class="badge-atencao">ATENÇÃO</span></td>
@@ -262,7 +262,7 @@
         <p class="mt-1 text-[10px] text-slate-500">Separe os quatro valores por ponto e vírgula. Os gráficos são independentes das células da tabela.</p>
       </details>
       <!-- LEGENDA DA TABELA DE INDICADORES -->
-      <div class="p-2 bg-slate-50 text-[10px] sm:text-xs text-slate-600 border-t border-slate-200">
+      <div class="p-2 bg-slate-50 text-xs sm:text-sm text-slate-600 border-t border-slate-200">
         <span class="font-bold text-red-600">CRÍTICO:</span> Desvio adverso acima de 20% da meta &nbsp;|&nbsp; 
         <span class="font-bold text-amber-600">ATENÇÃO:</span> Fora da meta até 20% &nbsp;|&nbsp; 
         <span class="font-bold text-green-600">DENTRO:</span> Meta atingida
@@ -803,7 +803,8 @@
         const ctx = canvas.getContext('2d');
         const w = canvas.width;
         const h = canvas.height;
-        const padding = 8;
+        const horizontalPadding = 12;
+        const verticalPadding = 14;
         if (!points.length) return;
 
         ctx.clearRect(0, 0, w, h);
@@ -812,8 +813,8 @@
         const max = Math.max(...points);
         const range = (max - min) === 0 ? 1 : (max - min);
 
-        const getX = (index) => padding + (points.length === 1 ? 0 : index / (points.length - 1)) * (w - 2 * padding);
-        const getY = (value) => h - padding - ((value - min) / range) * (h - 2 * padding);
+        const getX = (index) => horizontalPadding + (points.length === 1 ? 0 : index / (points.length - 1)) * (w - 2 * horizontalPadding);
+        const getY = (value) => h - verticalPadding - ((value - min) / range) * (h - 2 * verticalPadding);
 
         // Desenhar linha do Sparkline
         ctx.beginPath();
@@ -835,7 +836,7 @@
 
           // Círculo
           ctx.beginPath();
-          ctx.arc(x, y, 3, 0, Math.PI * 2);
+          ctx.arc(x, y, 4, 0, Math.PI * 2);
           ctx.fillStyle = '#0b2545';
           ctx.fill();
           ctx.strokeStyle = '#ffffff';
@@ -843,10 +844,10 @@
           ctx.stroke();
 
           // Rótulo textual
-          ctx.font = '8px Inter, sans-serif';
+          ctx.font = '600 10px Inter, sans-serif';
           ctx.fillStyle = '#334155';
           ctx.textAlign = 'center';
-          const textY = i % 2 === 0 ? y - 4 : y + 9;
+          const textY = y < h / 2 ? y + 14 : y - 7;
           ctx.fillText(pt, x, textY);
         });
       }

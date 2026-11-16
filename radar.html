@@ -105,6 +105,15 @@
       outline-offset: 1px;
       background-color: #eff6ff;
     }
+    #dashboard .collaborator-name,
+    #dashboard .collaborator-name * {
+      color: #000 !important;
+      font-size: 11px !important;
+      font-style: normal !important;
+      font-variant: normal !important;
+      font-weight: 400 !important;
+      text-decoration: none !important;
+    }
   </style>
 </head>
 <body class="p-2 sm:p-4 md:p-6 max-w-[1600px] mx-auto">
@@ -274,24 +283,29 @@
               <tr class="bg-slate-100 text-slate-700 font-semibold">
                 <th class="p-1.5 text-left pl-2">Ofensor</th>
                 <th class="p-1.5">Qtd</th>
+                <th class="p-1.5" data-editor-ignore>Impacto %</th>
               </tr>
             </thead>
             <tbody id="offenderRows" class="divide-y divide-slate-200 font-medium text-[11px]">
               <tr>
                 <td class="p-1.5 text-left pl-2 bg-slate-50">CAMBIO_VOLUNTARIO</td>
                 <td class="p-1.5">229</td>
+                <td class="p-1" data-editor-ignore><input data-offender-percentage type="text" inputmode="decimal" aria-label="Impacto percentual de CAMBIO_VOLUNTARIO" class="w-12 rounded border border-slate-300 bg-white px-1 py-0.5 text-center text-[11px]" disabled></td>
               </tr>
               <tr>
                 <td class="p-1.5 text-left pl-2 bg-slate-50">EXCEPCIONES</td>
                 <td class="p-1.5">131</td>
+                <td class="p-1" data-editor-ignore><input data-offender-percentage type="text" inputmode="decimal" aria-label="Impacto percentual de EXCEPCIONES" class="w-12 rounded border border-slate-300 bg-white px-1 py-0.5 text-center text-[11px]" disabled></td>
               </tr>
               <tr>
                 <td class="p-1.5 text-left pl-2 bg-slate-50">CAMBIO_INVOLUNTARIO</td>
                 <td class="p-1.5">131</td>
+                <td class="p-1" data-editor-ignore><input data-offender-percentage type="text" inputmode="decimal" aria-label="Impacto percentual de CAMBIO_INVOLUNTARIO" class="w-12 rounded border border-slate-300 bg-white px-1 py-0.5 text-center text-[11px]" disabled></td>
               </tr>
               <tr>
                 <td class="p-1.5 text-left pl-2 bg-slate-50">CHECK-IN</td>
                 <td class="p-1.5">100</td>
+                <td class="p-1" data-editor-ignore><input data-offender-percentage type="text" inputmode="decimal" aria-label="Impacto percentual de CHECK-IN" class="w-12 rounded border border-slate-300 bg-white px-1 py-0.5 text-center text-[11px]" disabled></td>
               </tr>
             </tbody>
           </table>
@@ -357,7 +371,7 @@
           </thead>
           <tbody class="divide-y divide-slate-200 text-[11px]">
             <tr class="hover:bg-slate-50">
-              <td class="p-2 font-semibold text-slate-800">MATHEUS SANTOS DE SOUSA</td>
+              <td class="p-2 collaborator-name">MATHEUS SANTOS DE SOUSA</td>
               <td class="p-2 text-center text-red-600 font-bold">-100</td>
               <td class="p-2 text-center text-slate-400">-</td>
               <td class="p-2 text-center text-slate-400">-</td>
@@ -367,7 +381,7 @@
               <td class="p-2 text-center font-medium">Baixa</td>
             </tr>
             <tr class="hover:bg-slate-50">
-              <td class="p-2 font-semibold text-slate-800">LORENA STEFHANE MACEDO FRAGA</td>
+              <td class="p-2 collaborator-name">LORENA STEFHANE MACEDO FRAGA</td>
               <td class="p-2 text-center font-bold">0</td>
               <td class="p-2 text-center text-slate-400">-</td>
               <td class="p-2 text-center text-slate-400">-</td>
@@ -377,7 +391,7 @@
               <td class="p-2 text-center font-medium">Baixa</td>
             </tr>
             <tr class="hover:bg-slate-50">
-              <td class="p-2 font-semibold text-slate-800">MARCIA QUEIROZ MORAIS</td>
+              <td class="p-2 collaborator-name">MARCIA QUEIROZ MORAIS</td>
               <td class="p-2 text-center font-bold">0</td>
               <td class="p-2 text-center text-slate-400">-</td>
               <td class="p-2 text-center text-slate-400">-</td>
@@ -387,7 +401,7 @@
               <td class="p-2 text-center font-bold text-amber-700 bg-amber-50">MÉDIA</td>
             </tr>
             <tr class="hover:bg-slate-50">
-              <td class="p-2 font-semibold text-slate-800">ADRIELE DE JESUS BOAVENTURA</td>
+              <td class="p-2 collaborator-name">ADRIELE DE JESUS BOAVENTURA</td>
               <td class="p-2 text-center text-red-600 font-bold">-100</td>
               <td class="p-2 text-center text-slate-400">-</td>
               <td class="p-2 text-center text-slate-400">-</td>
@@ -482,6 +496,7 @@
       const dashboard = document.getElementById('dashboard');
       const storageKey = 'radarOportunidades.v2';
       const saveStatus = document.getElementById('saveStatus');
+      const offenderPercentageInputs = Array.from(dashboard.querySelectorAll('[data-offender-percentage]'));
       const defaultSparklineSeries = {
         sparkNps: [20, 29, 52, 41],
         sparkTmo: [856, 816, 770, 844],
@@ -506,6 +521,17 @@
       const editableLeaves = Array.from(dashboard.querySelectorAll('*'))
         .filter((element) => element.children.length === 0 && element.textContent.trim() && !element.closest('[data-editor-ignore]'));
       const originalValues = editableLeaves.map((element) => element.textContent);
+      const originalOffenderCounts = Array.from(dashboard.querySelectorAll('#offenderRows tr'), (row) =>
+        Number(row.cells[1].textContent.trim())
+      );
+      const defaultOffenderPercentages = originalOffenderCounts.map((count) => {
+        const total = originalOffenderCounts.reduce((sum, value) => sum + value, 0);
+        return total ? (count / total) * 100 : 0;
+      });
+      offenderPercentageInputs.forEach((input, index) => {
+        input.value = formatPercentage(defaultOffenderPercentages[index]);
+        input.dataset.validPercentage = input.value;
+      });
 
       editableLeaves.forEach((element, index) => {
         element.dataset.editKey = String(index);
@@ -514,7 +540,8 @@
       function saveData() {
         try {
           const values = editableLeaves.map((element) => element.textContent);
-          localStorage.setItem(storageKey, JSON.stringify({ values, sparklineSeries }));
+          const offenderPercentages = offenderPercentageInputs.map((input) => input.dataset.validPercentage);
+          localStorage.setItem(storageKey, JSON.stringify({ values, sparklineSeries, offenderPercentages }));
           saveStatus.textContent = 'Alterações salvas neste navegador';
         } catch (error) {
           saveStatus.textContent = 'Não foi possível salvar neste navegador';
@@ -533,6 +560,15 @@
               sparklineSeries[id] = points;
             }
           });
+          if (Array.isArray(savedData.offenderPercentages)) {
+            offenderPercentageInputs.forEach((input, index) => {
+              const percentage = parsePercentage(savedData.offenderPercentages[index]);
+              if (percentage !== null) {
+                input.value = formatPercentage(percentage);
+                input.dataset.validPercentage = input.value;
+              }
+            });
+          }
         }
       } catch (error) {
         saveStatus.textContent = 'Não foi possível carregar dados salvos';
@@ -567,12 +603,43 @@
         });
       });
 
+      offenderPercentageInputs.forEach((input) => {
+        input.addEventListener('input', () => {
+          const percentage = parsePercentage(input.value);
+          if (percentage === null) {
+            saveStatus.textContent = 'Informe uma porcentagem entre 0 e 100';
+            return;
+          }
+          input.value = input.value.trim();
+          input.dataset.validPercentage = formatPercentage(percentage);
+          saveStatus.textContent = '';
+          updateCharts();
+          window.clearTimeout(saveTimer);
+          saveTimer = window.setTimeout(saveData, 300);
+        });
+        input.addEventListener('change', () => {
+          const percentage = parsePercentage(input.value);
+          if (percentage === null) {
+            input.value = input.dataset.validPercentage;
+            updateCharts();
+            saveStatus.textContent = 'Informe uma porcentagem entre 0 e 100';
+            return;
+          }
+          input.value = formatPercentage(percentage);
+          input.dataset.validPercentage = input.value;
+          updateCharts();
+        });
+      });
+
       document.getElementById('editToggle').addEventListener('click', (event) => {
         isEditing = !isEditing;
         editableLeaves.forEach((element) => {
           if (element.closest('[data-calculated]')) return;
           element.contentEditable = String(isEditing);
           element.spellcheck = false;
+        });
+        offenderPercentageInputs.forEach((input) => {
+          input.disabled = !isEditing;
         });
         event.currentTarget.setAttribute('aria-pressed', String(isEditing));
         event.currentTarget.textContent = isEditing ? 'Concluir edição' : 'Editar dados';
@@ -588,6 +655,10 @@
         Object.keys(sparklineSeries).forEach((id) => {
           sparklineSeries[id] = [...defaultSparklineSeries[id]];
         });
+        offenderPercentageInputs.forEach((input, index) => {
+          input.value = formatPercentage(defaultOffenderPercentages[index]);
+          input.dataset.validPercentage = input.value;
+        });
         syncSeriesInputs();
         localStorage.removeItem(storageKey);
         updateCharts();
@@ -596,7 +667,7 @@
 
       let saveTimer;
       dashboard.addEventListener('input', (event) => {
-        if (event.target.matches('[data-series-input]')) return;
+        if (event.target.matches('[data-series-input], [data-offender-percentage]')) return;
         updateCharts();
         window.clearTimeout(saveTimer);
         saveTimer = window.setTimeout(saveData, 300);
@@ -609,6 +680,21 @@
           : value.replace(/\.(?=\d{3}(?:\D|$))/g, '');
         const number = Number.parseFloat(normalized);
         return Number.isFinite(number) ? number : 0;
+      }
+
+      function parsePercentage(value) {
+        const normalized = value.trim().replace(/\s|%/g, '');
+        if (!normalized) return null;
+        const percentage = Number(normalized.includes(',')
+          ? normalized.replace(/\./g, '').replace(',', '.')
+          : normalized);
+        return Number.isFinite(percentage) && percentage >= 0 && percentage <= 100
+          ? percentage
+          : null;
+      }
+
+      function formatPercentage(value) {
+        return new Intl.NumberFormat('pt-BR', { maximumFractionDigits: 2 }).format(value);
       }
 
       function recalculateIndicators() {
@@ -670,7 +756,7 @@
             const value = Number(values[index] || 0);
             if (value <= 0) return;
             const position = arc.tooltipPosition();
-            ctx.fillText(`${((value / total) * 100).toFixed(1)}%`, position.x, position.y);
+            ctx.fillText(`${formatPercentage(value)}%`, position.x, position.y);
           });
           ctx.restore();
         }
@@ -699,10 +785,7 @@
               tooltip: {
                 callbacks: {
                   label(context) {
-                    const total = context.dataset.data.reduce((sum, value) => sum + value, 0);
-                    const value = context.raw;
-                    const percentage = total ? ((value / total) * 100).toFixed(1) : '0.0';
-                    return `${context.label}: ${value} (${percentage}%)`;
+                    return `${context.label}: ${formatPercentage(Number(context.raw))}%`;
                   }
                 }
               }
@@ -773,8 +856,8 @@
         const offenderRows = document.querySelectorAll('#offenderRows tr');
         if (offenderChart) {
           offenderChart.data.labels = Array.from(offenderRows, (row) => row.cells[0].textContent.trim());
-          offenderChart.data.datasets[0].data = Array.from(offenderRows, (row) =>
-            Math.max(0, parsePtBrNumber(row.cells[1].textContent))
+          offenderChart.data.datasets[0].data = offenderPercentageInputs.map((input) =>
+            parsePercentage(input.value) ?? 0
           );
           offenderChart.update();
         }

@@ -114,6 +114,46 @@
       font-weight: 400 !important;
       text-decoration: none !important;
     }
+    #dashboard .nps-score-positive,
+    #dashboard .nps-option-positive {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+    #dashboard .nps-score-negative,
+    #dashboard .nps-option-negative {
+      background-color: #fee2e2;
+      color: #b91c1c;
+    }
+    #dashboard .nps-score-neutral,
+    #dashboard .nps-option-neutral {
+      background-color: #f1f5f9;
+      color: #475569;
+    }
+    #dashboard .priority-baixa,
+    #dashboard .priority-option-baixa {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+    #dashboard .priority-media,
+    #dashboard .priority-option-media {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+    #dashboard .priority-alta,
+    #dashboard .priority-option-alta {
+      background-color: #ffedd5;
+      color: #c2410c;
+    }
+    #dashboard .priority-critica,
+    #dashboard .priority-option-critica {
+      background-color: #fee2e2;
+      color: #b91c1c;
+    }
+    #dashboard [data-nps-score] {
+      min-width: 76px;
+      white-space: nowrap;
+    }
+    #dashboard [data-priority-select] { min-width: 88px; }
   </style>
 </head>
 <body class="p-2 sm:p-4 md:p-6 max-w-[1600px] mx-auto">
@@ -272,8 +312,9 @@
     <!-- BLOCO 2: IMPACTO DOS OFENSORES (COL 5) -->
     <div class="lg:col-span-5 flex flex-col gap-4">
       <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden flex flex-col">
-        <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
+        <div class="sub-header-bg relative text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
           2. Impacto dos Ofensores
+          <button type="button" data-add-row="offenderRows" data-editor-ignore data-html2canvas-ignore class="hidden absolute right-2 top-1/2 -translate-y-1/2 rounded bg-white/15 px-2 py-1 text-[10px] normal-case hover:bg-white/25" aria-label="Adicionar ofensor">Adicionar linha</button>
       </div>
       <div class="p-3 flex-1 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
         <!-- TABELA DE OFENSORES -->
@@ -284,6 +325,7 @@
                 <th class="p-1.5 text-left pl-2">Ofensor</th>
                 <th class="p-1.5">Qtd</th>
                 <th class="p-1.5" data-editor-ignore>Impacto %</th>
+                <th class="hidden p-1.5" data-editor-ignore data-html2canvas-ignore data-row-actions>Ações</th>
               </tr>
             </thead>
             <tbody id="offenderRows" class="divide-y divide-slate-200 font-medium text-[11px]">
@@ -291,21 +333,25 @@
                 <td class="p-1.5 text-left pl-2 bg-slate-50">CAMBIO_VOLUNTARIO</td>
                 <td class="p-1.5">229</td>
                 <td class="p-1" data-editor-ignore><input data-offender-percentage type="text" inputmode="decimal" aria-label="Impacto percentual de CAMBIO_VOLUNTARIO" class="w-12 rounded border border-slate-300 bg-white px-1 py-0.5 text-center text-[11px]" disabled></td>
+                <td class="hidden p-1 text-center" data-editor-ignore data-html2canvas-ignore data-row-actions><button type="button" data-remove-row class="hidden rounded px-1 text-red-600 hover:bg-red-50" aria-label="Excluir ofensor"><i class="bi bi-trash3" aria-hidden="true"></i></button></td>
               </tr>
               <tr>
                 <td class="p-1.5 text-left pl-2 bg-slate-50">EXCEPCIONES</td>
                 <td class="p-1.5">131</td>
                 <td class="p-1" data-editor-ignore><input data-offender-percentage type="text" inputmode="decimal" aria-label="Impacto percentual de EXCEPCIONES" class="w-12 rounded border border-slate-300 bg-white px-1 py-0.5 text-center text-[11px]" disabled></td>
+                <td class="hidden p-1 text-center" data-editor-ignore data-html2canvas-ignore data-row-actions><button type="button" data-remove-row class="hidden rounded px-1 text-red-600 hover:bg-red-50" aria-label="Excluir ofensor"><i class="bi bi-trash3" aria-hidden="true"></i></button></td>
               </tr>
               <tr>
                 <td class="p-1.5 text-left pl-2 bg-slate-50">CAMBIO_INVOLUNTARIO</td>
                 <td class="p-1.5">131</td>
                 <td class="p-1" data-editor-ignore><input data-offender-percentage type="text" inputmode="decimal" aria-label="Impacto percentual de CAMBIO_INVOLUNTARIO" class="w-12 rounded border border-slate-300 bg-white px-1 py-0.5 text-center text-[11px]" disabled></td>
+                <td class="hidden p-1 text-center" data-editor-ignore data-html2canvas-ignore data-row-actions><button type="button" data-remove-row class="hidden rounded px-1 text-red-600 hover:bg-red-50" aria-label="Excluir ofensor"><i class="bi bi-trash3" aria-hidden="true"></i></button></td>
               </tr>
               <tr>
                 <td class="p-1.5 text-left pl-2 bg-slate-50">CHECK-IN</td>
                 <td class="p-1.5">100</td>
                 <td class="p-1" data-editor-ignore><input data-offender-percentage type="text" inputmode="decimal" aria-label="Impacto percentual de CHECK-IN" class="w-12 rounded border border-slate-300 bg-white px-1 py-0.5 text-center text-[11px]" disabled></td>
+                <td class="hidden p-1 text-center" data-editor-ignore data-html2canvas-ignore data-row-actions><button type="button" data-remove-row class="hidden rounded px-1 text-red-600 hover:bg-red-50" aria-label="Excluir ofensor"><i class="bi bi-trash3" aria-hidden="true"></i></button></td>
               </tr>
             </tbody>
           </table>
@@ -352,24 +398,26 @@
     
     <!-- BLOCO 4: PRIORIZAÇÃO DE INVESTIGAÇÃO (COL 7) -->
     <div class="lg:col-span-7 bg-white rounded-lg shadow border border-slate-200 overflow-hidden">
-      <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
+      <div class="sub-header-bg relative text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
         4. Priorização de Investigação
+        <button type="button" data-add-row="investigationRows" data-editor-ignore data-html2canvas-ignore class="hidden absolute right-2 top-1/2 -translate-y-1/2 rounded bg-white/15 px-2 py-1 text-[10px] normal-case hover:bg-white/25" aria-label="Adicionar investigação">Adicionar linha</button>
       </div>
       <div class="overflow-x-auto">
         <table class="w-full text-xs border-collapse table-border">
           <thead>
             <tr class="bg-slate-100 text-slate-700 font-semibold text-center">
               <th class="p-2 text-left">Colaborador</th>
-              <th class="p-2">NPS IA</th>
+              <th class="p-2 min-w-[82px] whitespace-nowrap">NPS IA</th>
               <th class="p-2">Pesq.</th>
-              <th class="p-2">NPS LATAM</th>
+              <th class="p-2 min-w-[82px] whitespace-nowrap">NPS LATAM</th>
               <th class="p-2">Dif.</th>
               <th class="p-2 text-left min-w-[180px]">Motivo</th>
               <th class="p-2 text-left">Classificação</th>
               <th class="p-2">Prior.</th>
+              <th class="hidden p-2" data-editor-ignore data-html2canvas-ignore data-row-actions>Ações</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-slate-200 text-[11px]">
+          <tbody id="investigationRows" class="divide-y divide-slate-200 text-[11px]">
             <tr class="hover:bg-slate-50">
               <td class="p-2 collaborator-name">MATHEUS SANTOS DE SOUSA</td>
               <td class="p-2 text-center text-red-600 font-bold">-100</td>
@@ -379,6 +427,7 @@
               <td class="p-2 leading-tight">Pior nota global (25%), FCR em 25%, NPS -100 e elevado tempo negativo (-44.360s).</td>
               <td class="p-2 bg-slate-50">Qualidade Iniciante / Baixo Desempenho Operacional</td>
               <td class="p-2 text-center font-medium">Baixa</td>
+              <td class="hidden p-1 text-center" data-editor-ignore data-html2canvas-ignore data-row-actions><button type="button" data-remove-row class="hidden rounded px-1 text-red-600 hover:bg-red-50" aria-label="Excluir investigação"><i class="bi bi-trash3" aria-hidden="true"></i></button></td>
             </tr>
             <tr class="hover:bg-slate-50">
               <td class="p-2 collaborator-name">LORENA STEFHANE MACEDO FRAGA</td>
@@ -389,6 +438,7 @@
               <td class="p-2 leading-tight">Segunda pior nota (27%), FCR em 27% e delta de NPS em -100.</td>
               <td class="p-2 bg-slate-50">Qualidade Iniciante / Incumprimento de Métricas</td>
               <td class="p-2 text-center font-medium">Baixa</td>
+              <td class="hidden p-1 text-center" data-editor-ignore data-html2canvas-ignore data-row-actions><button type="button" data-remove-row class="hidden rounded px-1 text-red-600 hover:bg-red-50" aria-label="Excluir investigação"><i class="bi bi-trash3" aria-hidden="true"></i></button></td>
             </tr>
             <tr class="hover:bg-slate-50">
               <td class="p-2 collaborator-name">MARCIA QUEIROZ MORAIS</td>
@@ -399,6 +449,7 @@
               <td class="p-2 leading-tight">Nota de 42%, FCR de 42%, precisão baixa (61%) e tempo negativo (-26.541s).</td>
               <td class="p-2 bg-slate-50">Desempenho Insuficiente / Produtividade</td>
               <td class="p-2 text-center font-bold text-amber-700 bg-amber-50">MÉDIA</td>
+              <td class="hidden p-1 text-center" data-editor-ignore data-html2canvas-ignore data-row-actions><button type="button" data-remove-row class="hidden rounded px-1 text-red-600 hover:bg-red-50" aria-label="Excluir investigação"><i class="bi bi-trash3" aria-hidden="true"></i></button></td>
             </tr>
             <tr class="hover:bg-slate-50">
               <td class="p-2 collaborator-name">ADRIELE DE JESUS BOAVENTURA</td>
@@ -409,6 +460,7 @@
               <td class="p-2 leading-tight">Nota de 46%, FCR em 46% e NPS/Delta zerados em -100.</td>
               <td class="p-2 bg-slate-50">Aderência ao Processo / Baixa Qualidade</td>
               <td class="p-2 text-center font-bold text-amber-700 bg-amber-50">MÉDIA</td>
+              <td class="hidden p-1 text-center" data-editor-ignore data-html2canvas-ignore data-row-actions><button type="button" data-remove-row class="hidden rounded px-1 text-red-600 hover:bg-red-50" aria-label="Excluir investigação"><i class="bi bi-trash3" aria-hidden="true"></i></button></td>
             </tr>
           </tbody>
         </table>
@@ -496,7 +548,166 @@
       const dashboard = document.getElementById('dashboard');
       const storageKey = 'radarOportunidades.v2';
       const saveStatus = document.getElementById('saveStatus');
-      const offenderPercentageInputs = Array.from(dashboard.querySelectorAll('[data-offender-percentage]'));
+      let offenderPercentageInputs = Array.from(dashboard.querySelectorAll('[data-offender-percentage]'));
+      const offenderRowsBody = dashboard.querySelector('#offenderRows');
+      const investigationRowsBody = dashboard.querySelector('#investigationRows');
+      let isEditing = false;
+      function createNpsSelect(value, label) {
+        const select = document.createElement('select');
+        select.dataset.npsScore = '';
+        select.dataset.editorIgnore = '';
+        select.setAttribute('aria-label', label);
+        select.className = 'w-full rounded border border-slate-300 px-1 py-1 text-center text-[11px] font-bold';
+        select.disabled = !isEditing;
+
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = 'Selecione';
+        select.append(placeholder);
+
+        for (let score = 100; score >= -100; score -= 1) {
+          const option = document.createElement('option');
+          option.value = String(score);
+          option.textContent = String(score);
+          option.classList.add(score > 0 ? 'nps-option-positive' : score < 0 ? 'nps-option-negative' : 'nps-option-neutral');
+          select.append(option);
+        }
+
+        const numericValue = Number(value);
+        select.value = value !== '' && Number.isInteger(numericValue) && numericValue >= -100 && numericValue <= 100
+          ? String(numericValue)
+          : '';
+        updateNpsSelectColor(select);
+        return select;
+      }
+
+      function addNpsSelectToCell(cell, label) {
+        const initialValue = cell.textContent.trim();
+        const mirror = document.createElement('span');
+        mirror.hidden = true;
+        mirror.dataset.npsMirror = '';
+        mirror.textContent = initialValue || '-';
+        const select = createNpsSelect(initialValue === '-' ? '' : initialValue, label);
+        cell.replaceChildren(mirror, select);
+        return select;
+      }
+
+      function setNpsSelectValue(select, value) {
+        const numericValue = Number(value);
+        select.value = value !== '' && Number.isInteger(numericValue) && numericValue >= -100 && numericValue <= 100
+          ? String(numericValue)
+          : '';
+        const mirror = select.parentElement.querySelector('[data-nps-mirror]');
+        mirror.firstElementChild
+          ? mirror.firstElementChild.textContent = select.value || '-'
+          : mirror.textContent = select.value || '-';
+        updateNpsSelectColor(select);
+      }
+
+      function updateNpsSelectColor(select) {
+        select.classList.remove('nps-score-positive', 'nps-score-negative', 'nps-score-neutral');
+        const score = Number(select.value);
+        select.classList.add(!select.value ? 'nps-score-neutral' : score > 0 ? 'nps-score-positive' : score < 0 ? 'nps-score-negative' : 'nps-score-neutral');
+      }
+
+      const priorityLabels = {
+        baixa: 'Baixa',
+        media: 'Média',
+        alta: 'Alta',
+        critica: 'Crítica'
+      };
+
+      function normalizePriority(value) {
+        const normalized = value.trim().toLocaleLowerCase('pt-BR')
+          .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        return Object.prototype.hasOwnProperty.call(priorityLabels, normalized) ? normalized : '';
+      }
+
+      function updatePriorityColor(select) {
+        select.classList.remove('priority-baixa', 'priority-media', 'priority-alta', 'priority-critica');
+        if (select.value) select.classList.add(`priority-${select.value}`);
+      }
+
+      function addPrioritySelectToCell(cell) {
+        const initialValue = cell.textContent.trim();
+        const mirror = document.createElement('span');
+        mirror.hidden = true;
+        mirror.dataset.priorityMirror = '';
+        mirror.textContent = initialValue || '-';
+
+        const select = document.createElement('select');
+        select.dataset.prioritySelect = '';
+        select.dataset.editorIgnore = '';
+        select.setAttribute('aria-label', 'Prioridade da investigação');
+        select.className = 'w-full rounded border border-slate-300 px-1 py-1 text-center text-[11px] font-semibold';
+        select.disabled = !isEditing;
+
+        const placeholder = document.createElement('option');
+        placeholder.value = '';
+        placeholder.textContent = 'Selecione';
+        select.append(placeholder);
+        Object.entries(priorityLabels).forEach(([value, label]) => {
+          const option = document.createElement('option');
+          option.value = value;
+          option.textContent = label;
+          option.classList.add(`priority-option-${value}`);
+          select.append(option);
+        });
+        cell.replaceChildren(mirror, select);
+        setPrioritySelectValue(select, initialValue);
+        return select;
+      }
+
+      function setPrioritySelectValue(select, value) {
+        const priority = normalizePriority(value);
+        select.value = priority;
+        const mirror = select.parentElement.querySelector('[data-priority-mirror]');
+        if (mirror) {
+          const mirrorText = priority ? priorityLabels[priority] : '-';
+          if (mirror.firstElementChild) mirror.firstElementChild.textContent = mirrorText;
+          else mirror.textContent = mirrorText;
+        }
+        updatePriorityColor(select);
+      }
+
+      function updateInvestigationDifference(row) {
+        const iaScore = row.cells[1].querySelector('[data-nps-score]').value;
+        const latamScore = row.cells[3].querySelector('[data-nps-score]').value;
+        const differenceCell = row.cells[4];
+        const differenceText = differenceCell.firstElementChild;
+        differenceCell.classList.remove('text-emerald-700', 'text-red-700', 'text-slate-500', 'font-bold');
+
+        if (iaScore === '' || latamScore === '') {
+          differenceText.textContent = '-';
+          differenceCell.classList.add('text-slate-500');
+          return;
+        }
+
+        const difference = Number(iaScore) - Number(latamScore);
+        differenceText.textContent = `${difference > 0 ? '+' : ''}${difference}`;
+        differenceCell.classList.add(difference > 0 ? 'text-emerald-700' : difference < 0 ? 'text-red-700' : 'text-slate-500', 'font-bold');
+      }
+
+      function readInvestigationRow(row) {
+        return Array.from({ length: 8 }, (_, index) => {
+          if (index === 1 || index === 3) {
+            return row.cells[index].querySelector('[data-nps-score]').value || '-';
+          }
+          if (index === 7) {
+            return row.cells[index].querySelector('[data-priority-select]').value || '-';
+          }
+          return row.cells[index].textContent.trim();
+        });
+      }
+
+      Array.from(investigationRowsBody.rows).forEach((row) => {
+        addNpsSelectToCell(row.cells[1], 'NPS IA');
+        addNpsSelectToCell(row.cells[3], 'NPS LATAM');
+        addPrioritySelectToCell(row.cells[7]);
+        row.cells[4].dataset.calculated = '';
+      });
+      const offenderRowTemplate = offenderRowsBody.rows[0].cloneNode(true);
+      const investigationRowTemplate = investigationRowsBody.rows[0].cloneNode(true);
       const defaultSparklineSeries = {
         sparkNps: [20, 29, 52, 41],
         sparkTmo: [856, 816, 770, 844],
@@ -506,7 +717,6 @@
       const sparklineSeries = Object.fromEntries(
         Object.entries(defaultSparklineSeries).map(([id, points]) => [id, [...points]])
       );
-      let isEditing = false;
       const textWalker = document.createTreeWalker(dashboard, NodeFilter.SHOW_TEXT);
       const textNodes = [];
       while (textWalker.nextNode()) textNodes.push(textWalker.currentNode);
@@ -532,6 +742,15 @@
         input.value = formatPercentage(defaultOffenderPercentages[index]);
         input.dataset.validPercentage = input.value;
       });
+      const defaultOffenderRows = Array.from(offenderRowsBody.rows, (row, index) => ({
+        name: row.cells[0].textContent.trim(),
+        count: row.cells[1].textContent.trim(),
+        percentage: offenderPercentageInputs[index].dataset.validPercentage
+      }));
+      const defaultInvestigationRows = Array.from(investigationRowsBody.rows, (row) =>
+        readInvestigationRow(row)
+      );
+      Array.from(investigationRowsBody.rows).forEach(updateInvestigationDifference);
 
       editableLeaves.forEach((element, index) => {
         element.dataset.editKey = String(index);
@@ -540,12 +759,66 @@
       function saveData() {
         try {
           const values = editableLeaves.map((element) => element.textContent);
-          const offenderPercentages = offenderPercentageInputs.map((input) => input.dataset.validPercentage);
-          localStorage.setItem(storageKey, JSON.stringify({ values, sparklineSeries, offenderPercentages }));
+          const offenders = Array.from(offenderRowsBody.rows, (row) => ({
+            name: row.cells[0].textContent.trim(),
+            count: row.cells[1].textContent.trim(),
+            percentage: row.querySelector('[data-offender-percentage]').dataset.validPercentage
+          }));
+          const investigations = Array.from(investigationRowsBody.rows, readInvestigationRow);
+          const offenderPercentages = offenders.map((row) => row.percentage);
+          localStorage.setItem(storageKey, JSON.stringify({
+            values, sparklineSeries, offenderPercentages, offenders, investigations
+          }));
           saveStatus.textContent = 'Alterações salvas neste navegador';
         } catch (error) {
           saveStatus.textContent = 'Não foi possível salvar neste navegador';
         }
+      }
+
+      function renderOffenderRows(rows) {
+        offenderRowsBody.replaceChildren(...rows.map((rowData) => {
+          const row = offenderRowTemplate.cloneNode(true);
+          row.cells[0].textContent = rowData.name;
+          row.cells[1].textContent = rowData.count;
+          const input = row.querySelector('[data-offender-percentage]');
+          const percentage = parsePercentage(rowData.percentage) ?? 0;
+          input.value = formatPercentage(percentage);
+          input.dataset.validPercentage = input.value;
+          input.setAttribute('aria-label', `Impacto percentual de ${rowData.name || 'novo ofensor'}`);
+          input.disabled = !isEditing;
+          row.querySelector('[data-remove-row]').classList.toggle('hidden', !isEditing);
+          row.querySelector('[data-row-actions]').classList.toggle('hidden', !isEditing);
+          row.cells[0].contentEditable = String(isEditing);
+          row.cells[1].contentEditable = String(isEditing);
+          return row;
+        }));
+        offenderPercentageInputs = Array.from(offenderRowsBody.querySelectorAll('[data-offender-percentage]'));
+      }
+
+      function renderInvestigationRows(rows) {
+        investigationRowsBody.replaceChildren(...rows.map((values) => {
+          const row = investigationRowTemplate.cloneNode(true);
+          values.forEach((value, index) => {
+            if (index === 1 || index === 3) {
+              const select = row.cells[index].querySelector('[data-nps-score]');
+              setNpsSelectValue(select, value === '-' ? '' : value);
+              select.disabled = !isEditing;
+              row.cells[index].contentEditable = 'false';
+            } else if (index === 7) {
+              const select = row.cells[index].querySelector('[data-priority-select]');
+              setPrioritySelectValue(select, value === '-' ? '' : value);
+              select.disabled = !isEditing;
+              row.cells[index].contentEditable = 'false';
+            } else if (index !== 4) {
+              row.cells[index].textContent = value;
+              row.cells[index].contentEditable = String(isEditing);
+            }
+          });
+          row.querySelector('[data-remove-row]').classList.toggle('hidden', !isEditing);
+          row.querySelector('[data-row-actions]').classList.toggle('hidden', !isEditing);
+          updateInvestigationDifference(row);
+          return row;
+        }));
       }
 
       try {
@@ -560,7 +833,7 @@
               sparklineSeries[id] = points;
             }
           });
-          if (Array.isArray(savedData.offenderPercentages)) {
+          if (Array.isArray(savedData.offenderPercentages) && !Array.isArray(savedData.offenders)) {
             offenderPercentageInputs.forEach((input, index) => {
               const percentage = parsePercentage(savedData.offenderPercentages[index]);
               if (percentage !== null) {
@@ -568,6 +841,21 @@
                 input.dataset.validPercentage = input.value;
               }
             });
+          }
+          if (Array.isArray(savedData.offenders)) {
+            const offenders = savedData.offenders
+              .filter((row) => row && typeof row.name === 'string' && typeof row.count === 'string')
+              .map((row) => ({
+                name: row.name,
+                count: row.count,
+                percentage: typeof row.percentage === 'string' ? row.percentage : '0'
+              }));
+            renderOffenderRows(offenders);
+          }
+          if (Array.isArray(savedData.investigations)) {
+            const investigations = savedData.investigations
+              .filter((row) => Array.isArray(row) && row.length === 8 && row.every((value) => typeof value === 'string'));
+            renderInvestigationRows(investigations);
           }
         }
       } catch (error) {
@@ -603,8 +891,9 @@
         });
       });
 
-      offenderPercentageInputs.forEach((input) => {
-        input.addEventListener('input', () => {
+      dashboard.addEventListener('input', (event) => {
+        if (event.target.matches('[data-offender-percentage]')) {
+          const input = event.target;
           const percentage = parsePercentage(input.value);
           if (percentage === null) {
             saveStatus.textContent = 'Informe uma porcentagem entre 0 e 100';
@@ -616,8 +905,21 @@
           updateCharts();
           window.clearTimeout(saveTimer);
           saveTimer = window.setTimeout(saveData, 300);
-        });
-        input.addEventListener('change', () => {
+        }
+      });
+      dashboard.addEventListener('change', (event) => {
+        if (event.target.matches('[data-nps-score]')) {
+          const select = event.target;
+          updateNpsSelectColor(select);
+          updateInvestigationDifference(select.closest('tr'));
+          window.clearTimeout(saveTimer);
+          saveTimer = window.setTimeout(saveData, 300);
+        } else if (event.target.matches('[data-priority-select]')) {
+          setPrioritySelectValue(event.target, event.target.value);
+          window.clearTimeout(saveTimer);
+          saveTimer = window.setTimeout(saveData, 300);
+        } else if (event.target.matches('[data-offender-percentage]')) {
+          const input = event.target;
           const percentage = parsePercentage(input.value);
           if (percentage === null) {
             input.value = input.dataset.validPercentage;
@@ -628,18 +930,30 @@
           input.value = formatPercentage(percentage);
           input.dataset.validPercentage = input.value;
           updateCharts();
-        });
+          window.clearTimeout(saveTimer);
+          saveTimer = window.setTimeout(saveData, 300);
+        }
       });
 
       document.getElementById('editToggle').addEventListener('click', (event) => {
         isEditing = !isEditing;
-        editableLeaves.forEach((element) => {
+        dashboard.querySelectorAll('*').forEach((element) => {
+          if (element.children.length > 0 || !element.textContent.trim() || element.closest('[data-editor-ignore]')) return;
           if (element.closest('[data-calculated]')) return;
           element.contentEditable = String(isEditing);
           element.spellcheck = false;
         });
         offenderPercentageInputs.forEach((input) => {
           input.disabled = !isEditing;
+        });
+        dashboard.querySelectorAll('[data-nps-score]').forEach((select) => {
+          select.disabled = !isEditing;
+        });
+        dashboard.querySelectorAll('[data-priority-select]').forEach((select) => {
+          select.disabled = !isEditing;
+        });
+        dashboard.querySelectorAll('[data-add-row], [data-remove-row], [data-row-actions]').forEach((button) => {
+          button.classList.toggle('hidden', !isEditing);
         });
         event.currentTarget.setAttribute('aria-pressed', String(isEditing));
         event.currentTarget.textContent = isEditing ? 'Concluir edição' : 'Editar dados';
@@ -652,12 +966,10 @@
         editableLeaves.forEach((element, index) => {
           element.textContent = originalValues[index];
         });
+        renderOffenderRows(defaultOffenderRows);
+        renderInvestigationRows(defaultInvestigationRows);
         Object.keys(sparklineSeries).forEach((id) => {
           sparklineSeries[id] = [...defaultSparklineSeries[id]];
-        });
-        offenderPercentageInputs.forEach((input, index) => {
-          input.value = formatPercentage(defaultOffenderPercentages[index]);
-          input.dataset.validPercentage = input.value;
         });
         syncSeriesInputs();
         localStorage.removeItem(storageKey);
@@ -667,7 +979,39 @@
 
       let saveTimer;
       dashboard.addEventListener('input', (event) => {
-        if (event.target.matches('[data-series-input], [data-offender-percentage]')) return;
+        if (event.target.matches('[data-series-input], [data-offender-percentage], [data-nps-score]')) return;
+        updateCharts();
+        window.clearTimeout(saveTimer);
+        saveTimer = window.setTimeout(saveData, 300);
+      });
+
+      dashboard.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-add-row], [data-remove-row]');
+        if (!button || !isEditing) return;
+
+        if (button.dataset.addRow === 'offenderRows') {
+          renderOffenderRows([
+            ...Array.from(offenderRowsBody.rows, (row) => ({
+              name: row.cells[0].textContent.trim(),
+              count: row.cells[1].textContent.trim(),
+              percentage: row.querySelector('[data-offender-percentage]').dataset.validPercentage
+            })),
+            { name: 'Novo ofensor', count: '0', percentage: '0' }
+          ]);
+        } else if (button.dataset.addRow === 'investigationRows') {
+          renderInvestigationRows([
+            ...Array.from(investigationRowsBody.rows, readInvestigationRow),
+            Array(8).fill('')
+          ]);
+        } else {
+          const row = button.closest('tr');
+          const body = row.parentElement;
+          row.remove();
+          if (body === offenderRowsBody) {
+            offenderPercentageInputs = Array.from(offenderRowsBody.querySelectorAll('[data-offender-percentage]'));
+          }
+        }
+
         updateCharts();
         window.clearTimeout(saveTimer);
         saveTimer = window.setTimeout(saveData, 300);
@@ -854,7 +1198,7 @@
 
       function updateCharts() {
         recalculateIndicators();
-        const offenderRows = document.querySelectorAll('#offenderRows tr');
+        const offenderRows = offenderRowsBody.rows;
         if (offenderChart) {
           offenderChart.data.labels = Array.from(offenderRows, (row) => row.cells[0].textContent.trim());
           offenderChart.data.datasets[0].data = offenderPercentageInputs.map((input) =>

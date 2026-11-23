@@ -314,7 +314,7 @@
       <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden flex flex-col">
         <div class="sub-header-bg relative text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
           2. Impacto dos Ofensores
-          <button type="button" data-add-row="offenderRows" data-editor-ignore data-html2canvas-ignore class="hidden absolute right-2 top-1/2 -translate-y-1/2 rounded bg-white/15 px-2 py-1 text-[10px] normal-case hover:bg-white/25" aria-label="Adicionar ofensor">Adicionar linha</button>
+          <button type="button" data-add-row="offenderRows" data-editor-ignore data-html2canvas-ignore class="hidden absolute right-2 top-1/2 -translate-y-1/2 rounded bg-white/15 px-2 py-1 text-[10px] normal-case hover:bg-white/25" aria-label="Adicionar ofensor">+ Adicionar ofensor</button>
       </div>
       <div class="p-3 flex-1 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
         <!-- TABELA DE OFENSORES -->
@@ -400,7 +400,7 @@
     <div class="lg:col-span-7 bg-white rounded-lg shadow border border-slate-200 overflow-hidden">
       <div class="sub-header-bg relative text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
         4. Priorização de Investigação
-        <button type="button" data-add-row="investigationRows" data-editor-ignore data-html2canvas-ignore class="hidden absolute right-2 top-1/2 -translate-y-1/2 rounded bg-white/15 px-2 py-1 text-[10px] normal-case hover:bg-white/25" aria-label="Adicionar investigação">Adicionar linha</button>
+        <button type="button" data-add-row="investigationRows" data-editor-ignore data-html2canvas-ignore class="hidden absolute right-2 top-1/2 -translate-y-1/2 rounded bg-white/15 px-2 py-1 text-[10px] normal-case hover:bg-white/25" aria-label="Adicionar agente">+ Adicionar agente</button>
       </div>
       <div class="overflow-x-auto">
         <table class="w-full text-xs border-collapse table-border">
@@ -671,11 +671,33 @@
       }
 
       function updateInvestigationDifference(row) {
-        const iaScore = row.cells[1].querySelector('[data-nps-score]').value;
-        const latamScore = row.cells[3].querySelector('[data-nps-score]').value;
+        if (!row || !row.cells || row.cells.length < 5) return;
+
+        const iaSelect = row.cells[1].querySelector('[data-nps-score]');
+        const latamSelect = row.cells[3].querySelector('[data-nps-score]');
+        if (!iaSelect || !latamSelect) return;
+
+        const iaScore = iaSelect.value;
+        const latamScore = latamSelect.value;
         const differenceCell = row.cells[4];
-        const differenceText = differenceCell.firstElementChild;
-        differenceCell.classList.remove('text-emerald-700', 'text-red-700', 'text-slate-500', 'font-bold');
+
+        // Linhas novas são clonadas de um modelo criado antes da preparação
+        // visual do conteúdo. Por isso, a célula pode não ter um span interno.
+        // Criamos esse elemento quando necessário para evitar erro no clique.
+        let differenceText = differenceCell.querySelector('[data-difference-value]');
+        if (!differenceText) {
+          differenceText = document.createElement('span');
+          differenceText.dataset.differenceValue = '';
+          differenceText.textContent = differenceCell.textContent.trim() || '-';
+          differenceCell.replaceChildren(differenceText);
+        }
+
+        differenceCell.classList.remove(
+          'text-emerald-700',
+          'text-red-700',
+          'text-slate-500',
+          'font-bold'
+        );
 
         if (iaScore === '' || latamScore === '') {
           differenceText.textContent = '-';
@@ -685,7 +707,10 @@
 
         const difference = Number(iaScore) - Number(latamScore);
         differenceText.textContent = `${difference > 0 ? '+' : ''}${difference}`;
-        differenceCell.classList.add(difference > 0 ? 'text-emerald-700' : difference < 0 ? 'text-red-700' : 'text-slate-500', 'font-bold');
+        differenceCell.classList.add(
+          difference > 0 ? 'text-emerald-700' : difference < 0 ? 'text-red-700' : 'text-slate-500',
+          'font-bold'
+        );
       }
 
       function readInvestigationRow(row) {
@@ -986,8 +1011,13 @@
       });
 
       dashboard.addEventListener('click', (event) => {
-        const button = event.target.closest('[data-add-row], [data-remove-row]');
+        const target = event.target instanceof Element ? event.target : event.target.parentElement;
+        const button = target?.closest('[data-add-row], [data-remove-row]');
         if (!button || !isEditing) return;
+
+        // Evita que um clique no ícone interno do botão seja interpretado
+        // como um alvo diferente do próprio botão.
+        event.preventDefault();
 
         if (button.dataset.addRow === 'offenderRows') {
           renderOffenderRows([
@@ -999,10 +1029,30 @@
             { name: 'Novo ofensor', count: '0', percentage: '0' }
           ]);
         } else if (button.dataset.addRow === 'investigationRows') {
-          renderInvestigationRows([
-            ...Array.from(investigationRowsBody.rows, readInvestigationRow),
-            Array(8).fill('')
+          const currentRows = Array.from(investigationRowsBody.rows, readInvestigationRow);
+          currentRows.push([
+            'NOVO AGENTE',
+            '-',
+            '',
+            '-',
+            '-',
+            '',
+            '',
+            '-'
           ]);
+          renderInvestigationRows(currentRows);
+
+          const newRow = investigationRowsBody.lastElementChild;
+          const nameCell = newRow?.cells[0];
+          if (nameCell) {
+            nameCell.focus();
+            const selection = window.getSelection();
+            const range = document.createRange();
+            range.selectNodeContents(nameCell);
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
+          saveStatus.textContent = 'Agente adicionado. Edite o nome e preencha os dados da linha.';
         } else {
           const row = button.closest('tr');
           const body = row.parentElement;

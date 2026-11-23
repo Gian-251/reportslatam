@@ -440,7 +440,7 @@
               <td class="p-2 text-center text-red-600 font-bold">-100</td>
               <td class="p-2 text-center text-slate-400">-</td>
               <td class="p-2 text-center text-slate-400">-</td>
-              <td class="p-2 text-center text-slate-400">-</td>
+              <td class="p-2 text-center text-slate-400"><span>-</span></td>
               <td class="p-2 leading-tight">Pior nota global (25%), FCR em 25%, NPS -100 e elevado tempo negativo (-44.360s).</td>
               <td class="p-2 bg-slate-50">Qualidade Iniciante / Baixo Desempenho Operacional</td>
               <td class="p-2 text-center font-medium">Baixa</td>
@@ -451,7 +451,7 @@
               <td class="p-2 text-center font-bold">0</td>
               <td class="p-2 text-center text-slate-400">-</td>
               <td class="p-2 text-center text-slate-400">-</td>
-              <td class="p-2 text-center text-slate-400">-</td>
+              <td class="p-2 text-center text-slate-400"><span>-</span></td>
               <td class="p-2 leading-tight">Segunda pior nota (27%), FCR em 27% e delta de NPS em -100.</td>
               <td class="p-2 bg-slate-50">Qualidade Iniciante / Incumprimento de Métricas</td>
               <td class="p-2 text-center font-medium">Baixa</td>
@@ -462,7 +462,7 @@
               <td class="p-2 text-center font-bold">0</td>
               <td class="p-2 text-center text-slate-400">-</td>
               <td class="p-2 text-center text-slate-400">-</td>
-              <td class="p-2 text-center text-slate-400">-</td>
+              <td class="p-2 text-center text-slate-400"><span>-</span></td>
               <td class="p-2 leading-tight">Nota de 42%, FCR de 42%, precisão baixa (61%) e tempo negativo (-26.541s).</td>
               <td class="p-2 bg-slate-50">Desempenho Insuficiente / Produtividade</td>
               <td class="p-2 text-center font-bold text-amber-700 bg-amber-50">MÉDIA</td>
@@ -473,7 +473,7 @@
               <td class="p-2 text-center text-red-600 font-bold">-100</td>
               <td class="p-2 text-center text-slate-400">-</td>
               <td class="p-2 text-center text-slate-400">-</td>
-              <td class="p-2 text-center text-slate-400">-</td>
+              <td class="p-2 text-center text-slate-400"><span>-</span></td>
               <td class="p-2 leading-tight">Nota de 46%, FCR em 46% e NPS/Delta zerados em -100.</td>
               <td class="p-2 bg-slate-50">Aderência ao Processo / Baixa Qualidade</td>
               <td class="p-2 text-center font-bold text-amber-700 bg-amber-50">MÉDIA</td>
@@ -615,7 +615,8 @@
         const mirror = document.createElement('span');
         mirror.hidden = true;
         mirror.dataset.npsMirror = '';
-        mirror.textContent = initialValue || '-';
+        mirror.className = 'w-full block rounded border border-slate-300 px-1 py-1 text-center text-[11px] font-bold nps-score-neutral';
+        mirror.textContent = initialValue === '-' ? '-' : initialValue;
         const select = createNpsSelect(initialValue === '-' ? '' : initialValue, label);
         cell.replaceChildren(mirror, select);
         return select;
@@ -627,9 +628,12 @@
           ? String(numericValue)
           : '';
         const mirror = select.parentElement.querySelector('[data-nps-mirror]');
-        mirror.firstElementChild
-          ? mirror.firstElementChild.textContent = select.value || '-'
-          : mirror.textContent = select.value || '-';
+        if (mirror) {
+          const valText = select.value || '-';
+          mirror.textContent = valText;
+          mirror.className = 'w-full block rounded border border-slate-300 px-1 py-1 text-center text-[11px] font-bold ' + 
+            (!select.value ? 'nps-score-neutral' : numericValue > 0 ? 'nps-score-positive' : numericValue < 0 ? 'nps-score-negative' : 'nps-score-neutral');
+        }
         updateNpsSelectColor(select);
       }
 
@@ -662,6 +666,7 @@
         const mirror = document.createElement('span');
         mirror.hidden = true;
         mirror.dataset.priorityMirror = '';
+        mirror.className = 'w-full block rounded border border-slate-300 px-1 py-1 text-center text-[11px] font-semibold';
         mirror.textContent = initialValue || '-';
 
         const select = document.createElement('select');
@@ -693,17 +698,20 @@
         const mirror = select.parentElement.querySelector('[data-priority-mirror]');
         if (mirror) {
           const mirrorText = priority ? priorityLabels[priority] : '-';
-          if (mirror.firstElementChild) mirror.firstElementChild.textContent = mirrorText;
-          else mirror.textContent = mirrorText;
+          mirror.textContent = mirrorText;
+          mirror.className = 'w-full block rounded border border-slate-300 px-1 py-1 text-center text-[11px] font-semibold ' + 
+            (priority ? `priority-${priority}` : '');
         }
         updatePriorityColor(select);
       }
 
       function updateInvestigationDifference(row) {
-        const iaScore = row.cells[1].querySelector('[data-nps-score]').value;
-        const latamScore = row.cells[3].querySelector('[data-nps-score]').value;
+        const iaScore = row.cells[1].querySelector('[data-nps-score]')?.value || '';
+        const latamScore = row.cells[3].querySelector('[data-nps-score]')?.value || '';
         const differenceCell = row.cells[4];
         const differenceText = differenceCell.firstElementChild;
+        if (!differenceText) return;
+
         differenceCell.classList.remove('text-emerald-700', 'text-red-700', 'text-slate-500', 'font-bold');
 
         if (iaScore === '' || latamScore === '') {
@@ -720,10 +728,10 @@
       function readInvestigationRow(row) {
         return Array.from({ length: 8 }, (_, index) => {
           if (index === 1 || index === 3) {
-            return row.cells[index].querySelector('[data-nps-score]').value || '-';
+            return row.cells[index].querySelector('[data-nps-score]')?.value || '-';
           }
           if (index === 7) {
-            return row.cells[index].querySelector('[data-priority-select]').value || '-';
+            return row.cells[index].querySelector('[data-priority-select]')?.value || '-';
           }
           return row.cells[index].textContent.trim();
         });
@@ -1222,7 +1230,6 @@
         const getX = (index) => horizontalPadding + (points.length === 1 ? 0 : index / (points.length - 1)) * (w - 2 * horizontalPadding);
         const getY = (value) => h - verticalPadding - ((value - min) / range) * (h - 2 * verticalPadding);
 
-        // Desenhar linha do Sparkline
         ctx.beginPath();
         ctx.strokeStyle = color;
         ctx.lineWidth = 1.8;
@@ -1235,12 +1242,10 @@
         });
         ctx.stroke();
 
-        // Desenhar os nós/pontos com rótulos de valores
         points.forEach((pt, i) => {
           const x = getX(i);
           const y = getY(pt);
 
-          // Círculo
           ctx.beginPath();
           ctx.arc(x, y, 4, 0, Math.PI * 2);
           ctx.fillStyle = '#0b2545';
@@ -1249,7 +1254,6 @@
           ctx.lineWidth = 1;
           ctx.stroke();
 
-          // Rótulo textual
           ctx.font = '600 10px Inter, sans-serif';
           ctx.fillStyle = '#334155';
           ctx.textAlign = 'center';
@@ -1287,6 +1291,13 @@
 
       button.disabled = true;
       saveStatus.textContent = 'Gerando imagem...';
+
+      const mirrors = document.querySelectorAll('[data-nps-mirror], [data-priority-mirror]');
+      const selects = document.querySelectorAll('[data-nps-score], [data-priority-select]');
+      
+      mirrors.forEach(m => m.hidden = false);
+      selects.forEach(s => s.style.display = 'none');
+
       try {
         const dashboard = document.getElementById('dashboard');
         const canvas = await window.html2canvas(dashboard, {
@@ -1304,6 +1315,8 @@
       } catch (error) {
         saveStatus.textContent = 'Falha ao gerar o JPG';
       } finally {
+        mirrors.forEach(m => m.hidden = true);
+        selects.forEach(s => s.style.display = '');
         button.disabled = false;
       }
     });

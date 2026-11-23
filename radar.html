@@ -100,6 +100,23 @@
       gap: 7px;
     }
     .app-navbar .navbar-toggler:focus { box-shadow: 0 0 0 .2rem #ffffff55; }
+    #dashboard [data-rich-editor][contenteditable="true"] {
+      min-height: 90px;
+      cursor: text;
+      white-space: normal;
+    }
+    #dashboard [data-rich-toolbar] { display: none; }
+    #dashboard [data-rich-toolbar].is-visible { display: flex; }
+    #dashboard [data-rich-toolbar] button {
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      background: #fff;
+      color: #334155;
+      padding: 3px 9px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    #dashboard [data-rich-toolbar] button:hover { background: #eff6ff; }
     #dashboard [contenteditable="true"]:focus {
       outline: 2px solid #2563eb;
       outline-offset: 1px;
@@ -314,7 +331,7 @@
       <div class="bg-white rounded-lg shadow border border-slate-200 overflow-hidden flex flex-col">
         <div class="sub-header-bg relative text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
           2. Impacto dos Ofensores
-          <button type="button" data-add-row="offenderRows" data-editor-ignore data-html2canvas-ignore class="hidden absolute right-2 top-1/2 -translate-y-1/2 rounded bg-white/15 px-2 py-1 text-[10px] normal-case hover:bg-white/25" aria-label="Adicionar ofensor">+ Adicionar ofensor</button>
+          <button type="button" data-add-row="offenderRows" data-editor-ignore data-html2canvas-ignore class="hidden absolute right-2 top-1/2 -translate-y-1/2 rounded bg-white/15 px-2 py-1 text-[10px] normal-case hover:bg-white/25" aria-label="Adicionar ofensor">Adicionar linha</button>
       </div>
       <div class="p-3 flex-1 grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
         <!-- TABELA DE OFENSORES -->
@@ -400,7 +417,7 @@
     <div class="lg:col-span-7 bg-white rounded-lg shadow border border-slate-200 overflow-hidden">
       <div class="sub-header-bg relative text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
         4. Priorização de Investigação
-        <button type="button" data-add-row="investigationRows" data-editor-ignore data-html2canvas-ignore class="hidden absolute right-2 top-1/2 -translate-y-1/2 rounded bg-white/15 px-2 py-1 text-[10px] normal-case hover:bg-white/25" aria-label="Adicionar agente">+ Adicionar agente</button>
+        <button type="button" data-add-row="investigationRows" data-editor-ignore data-html2canvas-ignore class="hidden absolute right-2 top-1/2 -translate-y-1/2 rounded bg-white/15 px-2 py-1 text-[10px] normal-case hover:bg-white/25" aria-label="Adicionar investigação">Adicionar linha</button>
       </div>
       <div class="overflow-x-auto">
         <table class="w-full text-xs border-collapse table-border">
@@ -519,7 +536,13 @@
         <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
           6. Insights da Qualidade
         </div>
-        <div class="p-3 text-xs leading-relaxed text-slate-700 text-justify bg-slate-50/50">
+        <div data-rich-toolbar data-html2canvas-ignore class="flex flex-wrap items-center gap-1 px-3 pt-2">
+          <button type="button" data-format-command="bold" title="Negrito"><strong>N</strong></button>
+          <button type="button" data-format-command="italic" title="Itálico"><em>I</em></button>
+          <button type="button" data-format-command="underline" title="Sublinhado"><u>S</u></button>
+          <button type="button" data-format-command="removeFormat" title="Remover formatação">Limpar formatação</button>
+        </div>
+        <div data-rich-editor="insights" class="p-3 text-xs leading-relaxed text-slate-700 text-justify bg-slate-50/50" contenteditable="false">
           O diagnóstico geral da operação aponta o supervisor <strong>4888879</strong> como o principal gargalo de desempenho do contrato, apresentando a menor média global de qualidade (56,5%) e de FCR (53,9%), impulsionado por um grupo de 4 agentes críticos com aproveitamento inferior a 50% (Matheus com 25%, Lorena com 27%, Márcia com 42% e Adriele com 46%). Soma-se a isso um cenário de forte descontrole nos tempos operacionais da equipe, que acumula desde perdas extremas por inatividade e pausas fora do padrão (-44.360s e -34.871s) até estouros críticos no tempo de atendimento (+492.344s com o agente Caio), evidenciando falhas diretas no acompanhamento de aderência e na gestão da linha em tempo real.
         </div>
       </div>
@@ -533,7 +556,13 @@
       <div class="sub-header-bg text-white font-semibold text-xs sm:text-sm py-2 px-3 text-center uppercase tracking-wider">
         7. Parecer da Qualidade
       </div>
-      <div class="p-3 text-xs leading-relaxed text-slate-700 text-justify bg-slate-50/50 flex-1">
+      <div data-rich-toolbar data-html2canvas-ignore class="flex flex-wrap items-center gap-1 px-3 pt-2">
+        <button type="button" data-format-command="bold" title="Negrito"><strong>N</strong></button>
+        <button type="button" data-format-command="italic" title="Itálico"><em>I</em></button>
+        <button type="button" data-format-command="underline" title="Sublinhado"><u>S</u></button>
+        <button type="button" data-format-command="removeFormat" title="Remover formatação">Limpar formatação</button>
+      </div>
+      <div data-rich-editor="opinion" class="p-3 text-xs leading-relaxed text-slate-700 text-justify bg-slate-50/50 flex-1" contenteditable="false">
         Diante da não conformidade dos indicadores em relação à meta operacional de 70-80%, a Qualidade recomenda a aplicação imediata de um Plano de Ação Focalizado (PIR) com duração de 30 dias na equipe 4888879. As tratativas devem priorizar o treinamento comportamental para os 4 agentes ofensores (foco em navegação de sistemas, redução de silêncio e resolutividade), alinhamentos rígidos sobre o cumprimento da escala de pausas e a execução diária de escutas assistidas pelos supervisores para sanar os desvios de conduta e elevar a média da equipe ao patamar mínimo aceitável.
       </div>
     </div>
@@ -671,33 +700,11 @@
       }
 
       function updateInvestigationDifference(row) {
-        if (!row || !row.cells || row.cells.length < 5) return;
-
-        const iaSelect = row.cells[1].querySelector('[data-nps-score]');
-        const latamSelect = row.cells[3].querySelector('[data-nps-score]');
-        if (!iaSelect || !latamSelect) return;
-
-        const iaScore = iaSelect.value;
-        const latamScore = latamSelect.value;
+        const iaScore = row.cells[1].querySelector('[data-nps-score]').value;
+        const latamScore = row.cells[3].querySelector('[data-nps-score]').value;
         const differenceCell = row.cells[4];
-
-        // Linhas novas são clonadas de um modelo criado antes da preparação
-        // visual do conteúdo. Por isso, a célula pode não ter um span interno.
-        // Criamos esse elemento quando necessário para evitar erro no clique.
-        let differenceText = differenceCell.querySelector('[data-difference-value]');
-        if (!differenceText) {
-          differenceText = document.createElement('span');
-          differenceText.dataset.differenceValue = '';
-          differenceText.textContent = differenceCell.textContent.trim() || '-';
-          differenceCell.replaceChildren(differenceText);
-        }
-
-        differenceCell.classList.remove(
-          'text-emerald-700',
-          'text-red-700',
-          'text-slate-500',
-          'font-bold'
-        );
+        const differenceText = differenceCell.firstElementChild;
+        differenceCell.classList.remove('text-emerald-700', 'text-red-700', 'text-slate-500', 'font-bold');
 
         if (iaScore === '' || latamScore === '') {
           differenceText.textContent = '-';
@@ -707,10 +714,7 @@
 
         const difference = Number(iaScore) - Number(latamScore);
         differenceText.textContent = `${difference > 0 ? '+' : ''}${difference}`;
-        differenceCell.classList.add(
-          difference > 0 ? 'text-emerald-700' : difference < 0 ? 'text-red-700' : 'text-slate-500',
-          'font-bold'
-        );
+        differenceCell.classList.add(difference > 0 ? 'text-emerald-700' : difference < 0 ? 'text-red-700' : 'text-slate-500', 'font-bold');
       }
 
       function readInvestigationRow(row) {
@@ -746,7 +750,7 @@
       const textNodes = [];
       while (textWalker.nextNode()) textNodes.push(textWalker.currentNode);
       textNodes.forEach((textNode) => {
-        if (!textNode.textContent.trim() || textNode.parentElement.closest('[data-editor-ignore]')) return;
+        if (!textNode.textContent.trim() || textNode.parentElement.closest('[data-editor-ignore], [data-rich-editor]')) return;
         const editableFragment = document.createElement('span');
         editableFragment.dataset.editableFragment = '';
         editableFragment.textContent = textNode.textContent;
@@ -756,6 +760,8 @@
       const editableLeaves = Array.from(dashboard.querySelectorAll('*'))
         .filter((element) => element.children.length === 0 && element.textContent.trim() && !element.closest('[data-editor-ignore]'));
       const originalValues = editableLeaves.map((element) => element.textContent);
+      const richEditors = Array.from(dashboard.querySelectorAll('[data-rich-editor]'));
+      const originalRichHtml = Object.fromEntries(richEditors.map((editor) => [editor.dataset.richEditor, editor.innerHTML]));
       const originalOffenderCounts = Array.from(dashboard.querySelectorAll('#offenderRows tr'), (row) =>
         Number(row.cells[1].textContent.trim())
       );
@@ -792,7 +798,8 @@
           const investigations = Array.from(investigationRowsBody.rows, readInvestigationRow);
           const offenderPercentages = offenders.map((row) => row.percentage);
           localStorage.setItem(storageKey, JSON.stringify({
-            values, sparklineSeries, offenderPercentages, offenders, investigations
+            values, sparklineSeries, offenderPercentages, offenders, investigations,
+            richText: Object.fromEntries(richEditors.map((editor) => [editor.dataset.richEditor, editor.innerHTML]))
           }));
           saveStatus.textContent = 'Alterações salvas neste navegador';
         } catch (error) {
@@ -849,6 +856,12 @@
       try {
         const savedData = JSON.parse(localStorage.getItem(storageKey) || 'null');
         if (savedData && Array.isArray(savedData.values)) {
+          if (savedData.richText && typeof savedData.richText === 'object') {
+            richEditors.forEach((editor) => {
+              const savedHtml = savedData.richText[editor.dataset.richEditor];
+              if (typeof savedHtml === 'string') editor.innerHTML = savedHtml;
+            });
+          }
           editableLeaves.forEach((element, index) => {
             if (typeof savedData.values[index] === 'string') element.textContent = savedData.values[index];
           });
@@ -968,6 +981,13 @@
           element.contentEditable = String(isEditing);
           element.spellcheck = false;
         });
+        richEditors.forEach((editor) => {
+          editor.contentEditable = String(isEditing);
+          editor.spellcheck = false;
+        });
+        dashboard.querySelectorAll('[data-rich-toolbar]').forEach((toolbar) => {
+          toolbar.classList.toggle('is-visible', isEditing);
+        });
         offenderPercentageInputs.forEach((input) => {
           input.disabled = !isEditing;
         });
@@ -985,11 +1005,28 @@
         saveStatus.textContent = isEditing ? 'Clique em qualquer texto ou valor para editar' : '';
       });
 
+      dashboard.querySelectorAll('[data-format-command]').forEach((button) => {
+        button.addEventListener('mousedown', (event) => event.preventDefault());
+        button.addEventListener('click', () => {
+          if (!isEditing) return;
+          const toolbar = button.closest('[data-rich-toolbar]');
+          const editor = toolbar?.nextElementSibling;
+          if (!editor?.matches('[data-rich-editor]')) return;
+          editor.focus();
+          document.execCommand(button.dataset.formatCommand, false, null);
+          window.clearTimeout(saveTimer);
+          saveTimer = window.setTimeout(saveData, 300);
+        });
+      });
+
       document.getElementById('saveData').addEventListener('click', saveData);
       document.getElementById('resetData').addEventListener('click', () => {
         if (!window.confirm('Restaurar todos os dados originais?')) return;
         editableLeaves.forEach((element, index) => {
           element.textContent = originalValues[index];
+        });
+        richEditors.forEach((editor) => {
+          editor.innerHTML = originalRichHtml[editor.dataset.richEditor] || '';
         });
         renderOffenderRows(defaultOffenderRows);
         renderInvestigationRows(defaultInvestigationRows);
@@ -1011,13 +1048,8 @@
       });
 
       dashboard.addEventListener('click', (event) => {
-        const target = event.target instanceof Element ? event.target : event.target.parentElement;
-        const button = target?.closest('[data-add-row], [data-remove-row]');
+        const button = event.target.closest('[data-add-row], [data-remove-row]');
         if (!button || !isEditing) return;
-
-        // Evita que um clique no ícone interno do botão seja interpretado
-        // como um alvo diferente do próprio botão.
-        event.preventDefault();
 
         if (button.dataset.addRow === 'offenderRows') {
           renderOffenderRows([
@@ -1029,30 +1061,10 @@
             { name: 'Novo ofensor', count: '0', percentage: '0' }
           ]);
         } else if (button.dataset.addRow === 'investigationRows') {
-          const currentRows = Array.from(investigationRowsBody.rows, readInvestigationRow);
-          currentRows.push([
-            'NOVO AGENTE',
-            '-',
-            '',
-            '-',
-            '-',
-            '',
-            '',
-            '-'
+          renderInvestigationRows([
+            ...Array.from(investigationRowsBody.rows, readInvestigationRow),
+            Array(8).fill('')
           ]);
-          renderInvestigationRows(currentRows);
-
-          const newRow = investigationRowsBody.lastElementChild;
-          const nameCell = newRow?.cells[0];
-          if (nameCell) {
-            nameCell.focus();
-            const selection = window.getSelection();
-            const range = document.createRange();
-            range.selectNodeContents(nameCell);
-            selection.removeAllRanges();
-            selection.addRange(range);
-          }
-          saveStatus.textContent = 'Agente adicionado. Edite o nome e preencha os dados da linha.';
         } else {
           const row = button.closest('tr');
           const body = row.parentElement;

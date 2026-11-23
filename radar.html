@@ -613,7 +613,7 @@
       function addNpsSelectToCell(cell, label) {
         const initialValue = cell.textContent.trim();
         const mirror = document.createElement('span');
-        mirror.className = 'hidden'; // Oculto por padrão, visível apenas na captura JPG
+        mirror.hidden = true;
         mirror.dataset.npsMirror = '';
         mirror.textContent = initialValue || '-';
         const select = createNpsSelect(initialValue === '-' ? '' : initialValue, label);
@@ -627,9 +627,9 @@
           ? String(numericValue)
           : '';
         const mirror = select.parentElement.querySelector('[data-nps-mirror]');
-        if (mirror) {
-          mirror.textContent = select.value || '-';
-        }
+        mirror.firstElementChild
+          ? mirror.firstElementChild.textContent = select.value || '-'
+          : mirror.textContent = select.value || '-';
         updateNpsSelectColor(select);
       }
 
@@ -637,12 +637,6 @@
         select.classList.remove('nps-score-positive', 'nps-score-negative', 'nps-score-neutral');
         const score = Number(select.value);
         select.classList.add(!select.value ? 'nps-score-neutral' : score > 0 ? 'nps-score-positive' : score < 0 ? 'nps-score-negative' : 'nps-score-neutral');
-        
-        // Atualiza também a cor do espelho para o JPG com base no valor
-        const mirror = select.parentElement?.querySelector('[data-nps-mirror]');
-        if (mirror) {
-          mirror.className = 'hidden text-[11px] font-bold px-1 py-0.5 rounded ' + (!select.value ? 'bg-slate-100 text-slate-600' : score > 0 ? 'bg-emerald-100 text-emerald-800' : score < 0 ? 'bg-red-100 text-red-800' : 'bg-slate-100 text-slate-600');
-        }
       }
 
       const priorityLabels = {
@@ -661,18 +655,12 @@
       function updatePriorityColor(select) {
         select.classList.remove('priority-baixa', 'priority-media', 'priority-alta', 'priority-critica');
         if (select.value) select.classList.add(`priority-${select.value}`);
-
-        const mirror = select.parentElement?.querySelector('[data-priority-mirror]');
-        if (mirror) {
-          const val = select.value;
-          mirror.className = 'hidden text-[11px] font-semibold px-1.5 py-0.5 rounded ' + (val === 'baixa' ? 'bg-emerald-100 text-emerald-800' : val === 'media' ? 'bg-amber-100 text-amber-800' : val === 'alta' ? 'bg-orange-100 text-orange-800' : val === 'critica' ? 'bg-red-100 text-red-800' : 'bg-slate-100 text-slate-600');
-        }
       }
 
       function addPrioritySelectToCell(cell) {
         const initialValue = cell.textContent.trim();
         const mirror = document.createElement('span');
-        mirror.className = 'hidden'; // Oculto por padrão, visível apenas na captura JPG
+        mirror.hidden = true;
         mirror.dataset.priorityMirror = '';
         mirror.textContent = initialValue || '-';
 
@@ -705,7 +693,8 @@
         const mirror = select.parentElement.querySelector('[data-priority-mirror]');
         if (mirror) {
           const mirrorText = priority ? priorityLabels[priority] : '-';
-          mirror.textContent = mirrorText;
+          if (mirror.firstElementChild) mirror.firstElementChild.textContent = mirrorText;
+          else mirror.textContent = mirrorText;
         }
         updatePriorityColor(select);
       }
@@ -744,13 +733,6 @@
         addNpsSelectToCell(row.cells[1], 'NPS IA');
         addNpsSelectToCell(row.cells[3], 'NPS LATAM');
         addPrioritySelectToCell(row.cells[7]);
-        
-        // Garante estrutura interna na coluna 4 (Diferença) para compatibilidade com o JPG
-        if (!row.cells[4].querySelector('span')) {
-          const diffSpan = document.createElement('span');
-          diffSpan.textContent = row.cells[4].textContent.trim() || '-';
-          row.cells[4].replaceChildren(diffSpan);
-        }
         row.cells[4].dataset.calculated = '';
       });
       const offenderRowTemplate = offenderRowsBody.rows[0].cloneNode(true);
@@ -862,10 +844,6 @@
             } else if (index !== 4) {
               row.cells[index].textContent = value;
               row.cells[index].contentEditable = String(isEditing);
-            } else {
-              const diffSpan = document.createElement('span');
-              diffSpan.textContent = '-';
-              row.cells[index].replaceChildren(diffSpan);
             }
           });
           row.querySelector('[data-remove-row]').classList.toggle('hidden', !isEditing);
@@ -1244,6 +1222,7 @@
         const getX = (index) => horizontalPadding + (points.length === 1 ? 0 : index / (points.length - 1)) * (w - 2 * horizontalPadding);
         const getY = (value) => h - verticalPadding - ((value - min) / range) * (h - 2 * verticalPadding);
 
+        // Desenhar linha do Sparkline
         ctx.beginPath();
         ctx.strokeStyle = color;
         ctx.lineWidth = 1.8;
@@ -1256,10 +1235,12 @@
         });
         ctx.stroke();
 
+        // Desenhar os nós/pontos com rótulos de valores
         points.forEach((pt, i) => {
           const x = getX(i);
           const y = getY(pt);
 
+          // Círculo
           ctx.beginPath();
           ctx.arc(x, y, 4, 0, Math.PI * 2);
           ctx.fillStyle = '#0b2545';
@@ -1268,6 +1249,7 @@
           ctx.lineWidth = 1;
           ctx.stroke();
 
+          // Rótulo textual
           ctx.font = '600 10px Inter, sans-serif';
           ctx.fillStyle = '#334155';
           ctx.textAlign = 'center';
@@ -1305,11 +1287,6 @@
 
       button.disabled = true;
       saveStatus.textContent = 'Gerando imagem...';
-
-      // TORNA OS ESPELHOS VISÍVEIS ANTES DA CAPTURA PARA APARECEREM NO JPG
-      document.querySelectorAll('[data-nps-mirror], [data-priority-mirror]').forEach(m => m.classList.remove('hidden'));
-      document.querySelectorAll('[data-nps-score], [data-priority-select]').forEach(s => s.classList.add('hidden'));
-
       try {
         const dashboard = document.getElementById('dashboard');
         const canvas = await window.html2canvas(dashboard, {
@@ -1327,9 +1304,6 @@
       } catch (error) {
         saveStatus.textContent = 'Falha ao gerar o JPG';
       } finally {
-        // RESTAURA OS SELECTS E OCULTA OS ESPELHOS NOVAMENTE APÓS A CAPTURA
-        document.querySelectorAll('[data-nps-mirror], [data-priority-mirror]').forEach(m => m.classList.add('hidden'));
-        document.querySelectorAll('[data-nps-score], [data-priority-select]').forEach(s => s.classList.remove('hidden'));
         button.disabled = false;
       }
     });
